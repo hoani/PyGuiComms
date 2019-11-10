@@ -13,56 +13,44 @@
   <property name="windowTitle">
    <string>Hoani's BBB Basic Control</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_2">
-   <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
-     <item>
-      <layout class="QVBoxLayout" name="verticalLayout">
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout">
-         <item>
-          <widget class="QPushButton" name="controlDisable">
-           <property name="text">
-            <string>Disable</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="controlAuto">
-           <property name="text">
-            <string>Automatic</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <widget class="Line" name="line">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QTextEdit" name="console"/>
-       </item>
-      </layout>
-     </item>
-    </layout>
-   </item>
-   <item>
-    <widget class="QStatusBar" name="statusbar"/>
-   </item>
-  </layout>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QHBoxLayout" name="horizontalLayout_2">
+    <item>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QPushButton" name="controlDisable">
+          <property name="text">
+           <string>Disable</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="controlAuto">
+          <property name="text">
+           <string>Automatic</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="Line" name="line">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QTextEdit" name="console"/>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>MainWindow</class>
-   <extends>QWidget</extends>
-   <header>mainwindow.h</header>
-   <container>1</container>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>
