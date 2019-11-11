@@ -12,8 +12,9 @@ class btClient(bluetooth.BluetoothSocket):
 
   def connect(self):
     print("Attempting to connect to", self.server)
+    self.setblocking(True)
     super().connect(self.server)
-    super().setblocking(False) # Non blocking
+    self.setblocking(False) # Non blocking
     print("Connected to", self.server)
     self.connected = True
 
