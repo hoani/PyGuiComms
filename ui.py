@@ -3,7 +3,6 @@ from PySide2.QtUiTools import QUiLoader
 from PySide2.QtWidgets import QApplication
 from PySide2.QtCore import QFile
 from PySide2 import QtCore, QtWidgets
-import btClient
 import extraConsole
 import threading
 import queue
@@ -34,11 +33,10 @@ class MainWindow(QtWidgets.QMainWindow):
     else:
       try:
         data = self.client.recv(1024)
-        if data:
+        if data != None:
           print(data)
         else:
           self.client.connected = False
-          self.client.close()
           
       except OSError:
         pass
@@ -115,10 +113,18 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
 if __name__ == '__main__':
-
+  echo = False
   serverMACAddress = '38:D2:69:E1:11:CB'
   port = 3
-  bt_socket = btClient.btClient(serverMACAddress, port)
+  if echo == True:
+    import echoClient
+    ClientSocket = echoClient.EchoClient
+  else:
+    import btClient
+    ClientSocket = btClient.BtClient
+    
+  
+  client_socket = ClientSocket(serverMACAddress, port)
 
   app = QApplication(sys.argv)
   #ui_file = QFile('BasicCommands.ui')
@@ -129,7 +135,7 @@ if __name__ == '__main__':
   loader.registerCustomWidget(MainWindow)
   window = loader.load(ui_file)
   window.init_signals()
-  window.register_client(bt_socket) 
+  window.register_client(client_socket) 
 
   ui_file.close()
 
