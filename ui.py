@@ -7,6 +7,13 @@ import extraConsole
 import threading
 import queue
 import clientThread
+import qdarkstyle
+
+class Vect():
+  def __init__(self, x, y, z):
+    self.x = x
+    self.y = y
+    self.z = z
 
 class MainWindow(QtWidgets.QMainWindow):
   def __init__(self, parent=None):
@@ -34,7 +41,8 @@ class MainWindow(QtWidgets.QMainWindow):
       try:
         data = self.client.recv(1024)
         if data != None:
-          print(data)
+          print(data.decode('utf-8'))
+          self._process_packet(data)
         else:
           self.client.connected = False
           
@@ -73,6 +81,24 @@ class MainWindow(QtWidgets.QMainWindow):
       self.slider_manual_speed.sliderReleased.connect(self._manual_speed) 
     self.manual_speed = 0.5
 
+    self.accelerometer = Vect(
+      self.findChild(QtWidgets.QLineEdit, 'acc_x'),
+      self.findChild(QtWidgets.QLineEdit, 'acc_y'),
+      self.findChild(QtWidgets.QLineEdit, 'acc_z')
+    )
+
+    self.gyroscope = Vect(
+      self.findChild(QtWidgets.QLineEdit, 'gyro_x'),
+      self.findChild(QtWidgets.QLineEdit, 'gyro_y'),
+      self.findChild(QtWidgets.QLineEdit, 'gyro_z')
+    )
+
+    self.magnetometer = Vect(
+      self.findChild(QtWidgets.QLineEdit, 'mag_x'),
+      self.findChild(QtWidgets.QLineEdit, 'mag_y'),
+      self.findChild(QtWidgets.QLineEdit, 'mag_z')
+    )
+
 
   def _control_disable(self):
     self._client_send(b'disable')
@@ -110,6 +136,28 @@ class MainWindow(QtWidgets.QMainWindow):
     else:
       self.client.send(data)
 
+  def _process_packet(self, data):
+    data = data.decode('utf-8')
+    for line in data.split('\n'):
+      items = line.split(' ')
+      if items[0] == "accel":
+        if len(items) == 4:
+          self.accelerometer.x.setText("{:.2f}".format(float(items[1])))
+          self.accelerometer.y.setText("{:.2f}".format(float(items[2])))
+          self.accelerometer.z.setText("{:.2f}".format(float(items[3])))
+
+      if items[0] == "gyros":
+        if len(items) == 4:
+          self.gyroscope.x.setText("{:.2f}".format(float(items[1])))
+          self.gyroscope.y.setText("{:.2f}".format(float(items[2])))
+          self.gyroscope.z.setText("{:.2f}".format(float(items[3])))
+
+      if items[0] == "magne":
+        if len(items) == 4:
+          self.magnetometer.x.setText("{:.2f}".format(float(items[1])))
+          self.magnetometer.y.setText("{:.2f}".format(float(items[2])))
+          self.magnetometer.z.setText("{:.2f}".format(float(items[3])))
+
 
 
 if __name__ == '__main__':
@@ -138,6 +186,8 @@ if __name__ == '__main__':
   window.register_client(client_socket) 
 
   ui_file.close()
+
+  app.setStyleSheet(qdarkstyle.load_stylesheet_pyside2())
 
 
   sys.exit(app.exec_())
