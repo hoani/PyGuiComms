@@ -1,0 +1,3 @@
+[] decouple client logic from baseUi
+[] Add pytest framework
+[] Make plotting independent of data type
