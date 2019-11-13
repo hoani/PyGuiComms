@@ -142,6 +142,7 @@ class MainWindow(QtWidgets.QMainWindow):
     if button_auto != None:
       button_auto.clicked.connect(self._control_auto)
 
+    #can try connecting to pressed and released
     if button_manual_fw != None:
       button_manual_fw.clicked.connect(self._control_manual_forward) 
     if button_manual_bw != None:
