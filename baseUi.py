@@ -1,12 +1,58 @@
-from PySide2.QtWidgets import QApplication
+from PySide2.QtWidgets import QApplication, QSizePolicy
 from PySide2 import QtCore, QtWidgets
 import extraConsole
 import sys
 import vect
+import math
+import numpy as np
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+import matplotlib
+import matplotlib.pyplot as pyplot
 try:
-    import qdarkstyle
+  import qdarkstyle
 except:
-    pass
+  pass
+import random
+
+class PlotCanvas(FigureCanvas):
+
+  def __init__(self, data, title= None, parent=None, width=5, height=4, dpi=100):
+    fig = matplotlib.figure.Figure(figsize=(width, height), dpi=dpi)
+    
+    self.axes = fig.add_subplot(111)
+    fig.set_facecolor('#00000000')
+
+    self.data = vect.Vec3([], [], [])
+
+    FigureCanvas.__init__(self, fig)
+    self.setParent(parent)
+
+    FigureCanvas.setSizePolicy(self,
+            QSizePolicy.Expanding,
+            QSizePolicy.Expanding)
+    FigureCanvas.updateGeometry(self)
+    self.subplot = self.figure.add_subplot(111)
+    self.subplot.set_facecolor('#014d4e')
+    if (title != None):
+      self.subplot.set_title(title)
+    self.l1,self.l2,self.l3, = self.subplot.plot(self.data.x, 'r', self.data.y, 'b', self.data.z, 'g')
+    self.index = 0
+    self.draw()
+
+  def update_data(self, new_data):
+    low = max(0,min(1, self.index - 100))
+    high = min(self.index, 101)
+    self.l1.set_xdata(np.append(self.l1.get_xdata(), self.index/10.0)[low:high])
+    self.l2.set_xdata(np.append(self.l2.get_xdata(), self.index/10.0)[low:high])
+    self.l3.set_xdata(np.append(self.l3.get_xdata(), self.index/10.0)[low:high])
+    self.l1.set_ydata(np.append(self.l1.get_ydata(), new_data.x)[low:high])
+    self.l2.set_ydata(np.append(self.l2.get_ydata(), new_data.y)[low:high])
+    self.l3.set_ydata(np.append(self.l3.get_ydata(), new_data.z)[low:high])
+    self.index += 1
+    self.subplot.relim()
+    self.subplot.autoscale_view()
+    self.draw()
+
 
 class MainWindow(QtWidgets.QMainWindow):
   def __init__(self, parent=None):
@@ -57,6 +103,39 @@ class MainWindow(QtWidgets.QMainWindow):
     button_manual_bw = self.findChild(QtWidgets.QPushButton, 'controlManualBW')
     button_manual_lt = self.findChild(QtWidgets.QPushButton, 'controlManualLT')
     button_manual_rt = self.findChild(QtWidgets.QPushButton, 'controlManualRT')
+
+    self.canvas_accel = self.findChild(QtWidgets.QGraphicsView, 'canvasAccel')
+    self.canvas_gyro = self.findChild(QtWidgets.QGraphicsView, 'canvasGyro')
+    self.canvas_mag = self.findChild(QtWidgets.QGraphicsView, 'canvasMag')
+
+    self.plot_layout = self.findChild(QtWidgets.QVBoxLayout, "plotLayout")
+
+    self.data_max = 50
+    self.accel_index = 0
+    self.accel_data = vect.Vec3(
+      np.zeros(self.data_max),
+      np.zeros(self.data_max),
+      np.zeros(self.data_max)
+      )
+    self.gyro_index = 0
+    self.gyro_data = vect.Vec3(
+      np.zeros(self.data_max),
+      np.zeros(self.data_max),
+      np.zeros(self.data_max)
+      )
+    self.mag_index = 0
+    self.mag_data = vect.Vec3(
+      np.zeros(self.data_max),
+      np.zeros(self.data_max),
+      np.zeros(self.data_max)
+      )
+
+    self.plot_accel = PlotCanvas(self.accel_data, title="Accel (m/s^2)")
+    self.plot_gyro = PlotCanvas(self.gyro_data, title="deg/s")
+    self.plot_mag = PlotCanvas(self.mag_data, title="Tesla")
+    self.plot_layout.addWidget(self.plot_accel)
+    self.plot_layout.addWidget(self.plot_gyro)
+    self.plot_layout.addWidget(self.plot_mag)
 
     if button_disable != None:
       button_disable.clicked.connect(self._control_disable)
@@ -135,6 +214,14 @@ class MainWindow(QtWidgets.QMainWindow):
     else:
       self.client.send(data)
 
+  def _update_data(self, arr, value, index):
+    if index == self.data_max:
+      arr = np.roll(arr, 1)
+      arr[self.data_max - 1] = value
+    else:
+      arr[index] = value
+
+
   def _process_packet(self, data):
     data = data.decode('utf-8')
     for line in data.split('\n'):
@@ -145,14 +232,44 @@ class MainWindow(QtWidgets.QMainWindow):
           self.accelerometer.y.setText("{:.2f}".format(float(items[2])))
           self.accelerometer.z.setText("{:.2f}".format(float(items[3])))
 
+          # self._update_data(self.accel_data.x, float(items[1]), self.accel_index)
+          # self._update_data(self.accel_data.y, float(items[2]), self.accel_index)
+          # self._update_data(self.accel_data.z, float(items[3]), self.accel_index)
+
+          # if self.accel_index != self.data_max:
+          #    self.accel_index += 1
+
+          # self.plot_accel.plot(self.accel_data)
+          self.plot_accel.update_data(vect.Vec3(float(items[1]), float(items[2]), float(items[3])))
+
       if items[0] == "gyros":
         if len(items) == 4:
           self.gyroscope.x.setText("{:.2f}".format(float(items[1])))
           self.gyroscope.y.setText("{:.2f}".format(float(items[2])))
           self.gyroscope.z.setText("{:.2f}".format(float(items[3])))
 
+          # self._update_data(self.gyro_data.y, float(items[2]), self.gyro_index)
+          # self._update_data(self.gyro_data.x, float(items[1]), self.gyro_index)
+          # self._update_data(self.gyro_data.z, float(items[3]), self.gyro_index)
+
+          # if self.gyro_index != self.data_max:
+          #    self.gyro_index += 1
+
+          # self.plot_gyro.plot(self.gyro_data)
+          self.plot_gyro.update_data(vect.Vec3(float(items[1]), float(items[2]), float(items[3])))
+
       if items[0] == "magne":
         if len(items) == 4:
           self.magnetometer.x.setText("{:.2f}".format(float(items[1])))
           self.magnetometer.y.setText("{:.2f}".format(float(items[2])))
           self.magnetometer.z.setText("{:.2f}".format(float(items[3])))
+
+          # self._update_data(self.mag_data.x, float(items[1]), self.mag_index)
+          # self._update_data(self.mag_data.y, float(items[2]), self.mag_index)
+          # self._update_data(self.mag_data.z, float(items[3]), self.mag_index)
+
+          # if self.mag_index != self.data_max:
+          #    self.mag_index += 1
+
+          # self.plot_mag.plot(self.mag_data)
+          self.plot_mag.update_data(vect.Vec3(float(items[1]), float(items[2]), float(items[3])))
