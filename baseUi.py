@@ -102,7 +102,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
     #can try connecting to pressed and released
     if button_manual_fw != None:
-      button_manual_fw.clicked.connect(self._control_manual_forward) 
+      button_manual_fw.clicked.connect(self._control_manual_forward)
+      button_manual_fw.pressed.connect(self._control_manual_forward_pressed)
+      button_manual_fw.released.connect(self._control_manual_release)
     if button_manual_bw != None:
       button_manual_bw.clicked.connect(self._control_manual_backward) 
     if button_manual_lt != None:
@@ -166,6 +168,12 @@ class MainWindow(QtWidgets.QMainWindow):
       "{:0.2f}".format(self.manual_speed).encode('utf-8') +
       b' '
       )
+
+  def _control_manual_forward_pressed(self):
+    print("Manual FW Button Pressed")
+
+  def _control_manual_release(self):
+    print("Manual Button Release")
 
   def _client_send(self, data):
     if self.client == None:

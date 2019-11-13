@@ -15,7 +15,7 @@ import baseUi
 
 
 if __name__ == '__main__':
-  echo = False
+  echo = True
   serverMACAddress = '38:D2:69:E1:11:CB'
   port = 3
   if echo == True:
