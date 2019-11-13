@@ -9,7 +9,7 @@ import queue
 import clientThread
 import vect
 import baseUi
-#import qdarkstyle
+
 
 
 
@@ -40,9 +40,6 @@ if __name__ == '__main__':
   window.register_client(client_socket) 
 
   ui_file.close()
-
-  #app.setStyleSheet(qdarkstyle.load_stylesheet_pyside2())
-
 
   sys.exit(app.exec_())
 

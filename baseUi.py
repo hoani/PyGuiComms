@@ -3,12 +3,20 @@ from PySide2 import QtCore, QtWidgets
 import extraConsole
 import sys
 import vect
+try:
+    import qdarkstyle
+except:
+    pass
 
 class MainWindow(QtWidgets.QMainWindow):
   def __init__(self, parent=None):
     super().__init__(parent)
     self.client = None
     self.show()
+    try:
+        self.setStyleSheet(qdarkstyle.load_stylesheet_pyside2())
+    except:
+        pass
 
   def register_client(self, client):
     if self.client == None:
