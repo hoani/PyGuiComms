@@ -13,6 +13,8 @@ class MainWindow(QtWidgets.QMainWindow):
     super().__init__(parent)
     self.client = None
     self.show()
+    registration_timer = QtCore.QTimer(self)
+    registration_timer.singleShot(1, self._register_widgets)
     try:
         self.setStyleSheet(qdarkstyle.load_stylesheet_pyside2())
     except:
@@ -48,7 +50,7 @@ class MainWindow(QtWidgets.QMainWindow):
       except Exception as e:
         print(e)
 
-  def init_signals(self):
+  def _register_widgets(self):
     button_disable = self.findChild(QtWidgets.QPushButton, 'controlDisable')
     button_auto = self.findChild(QtWidgets.QPushButton, 'controlAuto')
     button_manual_fw = self.findChild(QtWidgets.QPushButton, 'controlManualFW')

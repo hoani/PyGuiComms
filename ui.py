@@ -36,7 +36,6 @@ if __name__ == '__main__':
   loader = QUiLoader()
   loader.registerCustomWidget(baseUi.MainWindow)
   window = loader.load(ui_file)
-  window.init_signals()
   window.register_client(client_socket) 
 
   ui_file.close()
