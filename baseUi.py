@@ -109,15 +109,17 @@ class MainWindow(QtWidgets.QMainWindow):
 
     #can try connecting to pressed and released
     if button_manual_fw != None:
-      button_manual_fw.clicked.connect(self._control_manual_forward)
       button_manual_fw.pressed.connect(self._control_manual_forward_pressed)
       button_manual_fw.released.connect(self._control_manual_release)
     if button_manual_bw != None:
-      button_manual_bw.clicked.connect(self._control_manual_backward) 
+      button_manual_bw.pressed.connect(self._control_manual_backward_pressed)
+      button_manual_bw.released.connect(self._control_manual_release)
     if button_manual_lt != None:
-      button_manual_lt.clicked.connect(self._control_manual_left) 
+      button_manual_lt.pressed.connect(self._control_manual_left_pressed)
+      button_manual_lt.released.connect(self._control_manual_release) 
     if button_manual_rt != None:
-      button_manual_rt.clicked.connect(self._control_manual_right) 
+      button_manual_rt.pressed.connect(self._control_manual_right_pressed)
+      button_manual_rt.released.connect(self._control_manual_release)
 
     console = self.findChild(QtWidgets.QWidget, 'console')
     sys.stdout = extraConsole.extraConsole(console, QtWidgets.QTextEdit.insertPlainText)
@@ -178,11 +180,20 @@ class MainWindow(QtWidgets.QMainWindow):
 
   def _control_manual_forward_pressed(self):
     self.manual_upkeep = self._control_manual_forward
-    print("Manual FW Button Pressed")
+  
+  def _control_manual_backward_pressed(self):
+    self.manual_upkeep = self._control_manual_backward
+  
+  def _control_manual_left_pressed(self):
+    self.manual_upkeep = self._control_manual_left
+  
+  def _control_manual_right_pressed(self):
+    self.manual_upkeep = self._control_manual_right
+
+  
 
   def _control_manual_release(self):
     self.manual_upkeep = None
-    print("Manual Button Release")
 
   def _client_send(self, data):
     if self.client == None:
