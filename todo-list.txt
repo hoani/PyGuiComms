@@ -1,7 +1,4 @@
 [] decouple client logic from baseUi
-[] Add pytest framework
 [] Make plotting independent of data type
-[] Put console cursor to the end of the console on updates
 [] Move all non-essential UI elements out of baseUi
-[] Set up pytest environment
 [] Integrate infrared sensor

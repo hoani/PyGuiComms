@@ -1,5 +1,5 @@
 from PySide2.QtWidgets import QApplication
-from PySide2 import QtCore, QtWidgets
+from PySide2 import QtCore, QtWidgets, QtGui
 import extraConsole
 import sys
 import vect
@@ -104,8 +104,8 @@ class MainWindow(QtWidgets.QMainWindow):
       )
 
     self.plot_accel = plotCanvas.PlotCanvas(self.accel_data, title="Accel (m/s^2)")
-    self.plot_gyro = plotCanvas.PlotCanvas(self.gyro_data, title="deg/s")
-    self.plot_mag = plotCanvas.PlotCanvas(self.mag_data, title="Tesla")
+    self.plot_gyro = plotCanvas.PlotCanvas(self.gyro_data, title="Gyro (deg/s)")
+    self.plot_mag = plotCanvas.PlotCanvas(self.mag_data, title="Mag (mT)")
     self.plot_layout.addWidget(self.plot_accel)
     self.plot_layout.addWidget(self.plot_gyro)
     self.plot_layout.addWidget(self.plot_mag)
@@ -129,8 +129,10 @@ class MainWindow(QtWidgets.QMainWindow):
       button_manual_rt.pressed.connect(self._control_manual_right_pressed)
       button_manual_rt.released.connect(self._control_manual_release)
 
-    console = self.findChild(QtWidgets.QWidget, 'console')
-    sys.stdout = extraConsole.extraConsole(console, QtWidgets.QTextEdit.insertPlainText)
+    self.console = self.findChild(QtWidgets.QWidget, 'console')
+    if self.console != None:
+      sys.stdout = extraConsole.extraConsole(self.console, QtWidgets.QTextEdit.insertPlainText)
+      self.console.textChanged.connect(self._console_cursor)
 
     self.slider_manual_speed = self.findChild(QtWidgets.QSlider, 'manualSpeed')
     if self.slider_manual_speed != None:
@@ -155,6 +157,8 @@ class MainWindow(QtWidgets.QMainWindow):
       self.findChild(QtWidgets.QLineEdit, 'mag_z')
     )
 
+  def _console_cursor(self):
+    self.console.moveCursor(QtGui.QTextCursor.End)
 
   def _control_disable(self):
     self._client_send(b'disable')
@@ -198,8 +202,6 @@ class MainWindow(QtWidgets.QMainWindow):
   def _control_manual_right_pressed(self):
     self.manual_upkeep = self._control_manual_right
 
-  
-
   def _control_manual_release(self):
     self.manual_upkeep = None
     self._control_disable()
@@ -217,7 +219,6 @@ class MainWindow(QtWidgets.QMainWindow):
     else:
       arr[index] = value
 
-
   def _process_packet(self, data):
     data = data.decode('utf-8')
     for line in data.split('\n'):
@@ -228,14 +229,6 @@ class MainWindow(QtWidgets.QMainWindow):
           self.accelerometer.y.setText("{:.2f}".format(float(items[2])))
           self.accelerometer.z.setText("{:.2f}".format(float(items[3])))
 
-          # self._update_data(self.accel_data.x, float(items[1]), self.accel_index)
-          # self._update_data(self.accel_data.y, float(items[2]), self.accel_index)
-          # self._update_data(self.accel_data.z, float(items[3]), self.accel_index)
-
-          # if self.accel_index != self.data_max:
-          #    self.accel_index += 1
-
-          # self.plot_accel.plot(self.accel_data)
           self.plot_accel.update_data(vect.Vec3(float(items[1]), float(items[2]), float(items[3])))
 
       if items[0] == "gyros":
@@ -244,14 +237,6 @@ class MainWindow(QtWidgets.QMainWindow):
           self.gyroscope.y.setText("{:.2f}".format(float(items[2])))
           self.gyroscope.z.setText("{:.2f}".format(float(items[3])))
 
-          # self._update_data(self.gyro_data.y, float(items[2]), self.gyro_index)
-          # self._update_data(self.gyro_data.x, float(items[1]), self.gyro_index)
-          # self._update_data(self.gyro_data.z, float(items[3]), self.gyro_index)
-
-          # if self.gyro_index != self.data_max:
-          #    self.gyro_index += 1
-
-          # self.plot_gyro.plot(self.gyro_data)
           self.plot_gyro.update_data(vect.Vec3(float(items[1]), float(items[2]), float(items[3])))
 
       if items[0] == "magne":
@@ -260,12 +245,4 @@ class MainWindow(QtWidgets.QMainWindow):
           self.magnetometer.y.setText("{:.2f}".format(float(items[2])))
           self.magnetometer.z.setText("{:.2f}".format(float(items[3])))
 
-          # self._update_data(self.mag_data.x, float(items[1]), self.mag_index)
-          # self._update_data(self.mag_data.y, float(items[2]), self.mag_index)
-          # self._update_data(self.mag_data.z, float(items[3]), self.mag_index)
-
-          # if self.mag_index != self.data_max:
-          #    self.mag_index += 1
-
-          # self.plot_mag.plot(self.mag_data)
           self.plot_mag.update_data(vect.Vec3(float(items[1]), float(items[2]), float(items[3])))
