@@ -18,10 +18,11 @@ class MainWindow(QtWidgets.QMainWindow):
     self.client = None
     self.client_connecting = False
     self.show()
+    self.upkeep_timer = []
     self.manual_upkeep = None
-    self.upkeep_timer = QtCore.QTimer(self)
-    self.upkeep_timer.timeout.connect(self._upkeep)
-    self.upkeep_timer.start(10) #Update rate in ms
+    self.add_upkeep(100, self._upkeep)
+    self.add_upkeep(50, self._manual_upkeep)
+    self.add_upkeep(10, self._client_upkeep)
     registration_timer = QtCore.QTimer(self)
     registration_timer.singleShot(1, self._register_widgets)
     try:
@@ -29,12 +30,19 @@ class MainWindow(QtWidgets.QMainWindow):
     except:
         pass
 
+  def add_upkeep(self, period_ms, callback):
+    timer = QtCore.QTimer(self)
+    self.upkeep_timer.append(timer)
+    timer.start(period_ms)
+    timer.timeout.connect(callback)
+
   def register_client(self, client):
     self.client = client
 
   def _upkeep(self):
-    if self.client != None:
-      self._client_upkeep()
+    pass
+
+  def _manual_upkeep(self):
     if self.manual_upkeep != None:
       self.manual_upkeep()
 
@@ -45,7 +53,7 @@ class MainWindow(QtWidgets.QMainWindow):
         try:
           self.client.connect()
         except:
-          self.client_timer.singleShot(10, self._client_upkeep)
+          pass
         self.client_connecting = False
     else:
       try:
@@ -175,7 +183,7 @@ class MainWindow(QtWidgets.QMainWindow):
       dir.encode('utf-8') +
       b' ' +
       "{:0.2f}".format(self.manual_speed).encode('utf-8') +
-      b' '
+      b'\n'
       )
 
   def _control_manual_forward_pressed(self):
@@ -194,6 +202,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
   def _control_manual_release(self):
     self.manual_upkeep = None
+    self._control_disable()
 
   def _client_send(self, data):
     if self.client == None:
