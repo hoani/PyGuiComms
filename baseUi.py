@@ -16,7 +16,12 @@ class MainWindow(QtWidgets.QMainWindow):
   def __init__(self, parent=None):
     super().__init__(parent)
     self.client = None
+    self.client_connecting = False
     self.show()
+    self.manual_upkeep = None
+    self.upkeep_timer = QtCore.QTimer(self)
+    self.upkeep_timer.timeout.connect(self._upkeep)
+    self.upkeep_timer.start(10) #Update rate in ms
     registration_timer = QtCore.QTimer(self)
     registration_timer.singleShot(1, self._register_widgets)
     try:
@@ -25,21 +30,23 @@ class MainWindow(QtWidgets.QMainWindow):
         pass
 
   def register_client(self, client):
-    if self.client == None:
-      self.client_timer = QtCore.QTimer(self)
-      self.client_timer.timeout.connect(self._client_upkeep)
-      self.client_timer.singleShot(10, self._client_upkeep) #Update rate in ms
-
     self.client = client
+
+  def _upkeep(self):
+    if self.client != None:
+      self._client_upkeep()
+    if self.manual_upkeep != None:
+      self.manual_upkeep()
 
   def _client_upkeep(self):
     if self.client.connected == False:
-      try:
-        self.client_timer.stop()
-        self.client.connect()
-        self.client_timer.start(10) #Update rate in ms
-      except:
-        self.client_timer.singleShot(10, self._client_upkeep)
+      if self.client_connecting == False:
+        self.client_connecting = True
+        try:
+          self.client.connect()
+        except:
+          self.client_timer.singleShot(10, self._client_upkeep)
+        self.client_connecting = False
     else:
       try:
         data = self.client.recv(1024)
@@ -170,9 +177,11 @@ class MainWindow(QtWidgets.QMainWindow):
       )
 
   def _control_manual_forward_pressed(self):
+    self.manual_upkeep = self._control_manual_forward
     print("Manual FW Button Pressed")
 
   def _control_manual_release(self):
+    self.manual_upkeep = None
     print("Manual Button Release")
 
   def _client_send(self, data):
