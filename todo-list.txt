@@ -3,5 +3,4 @@
 [] Integrate infrared sensor
 [] Integrate webcam
 [] Set a max cap to console
-[] change plotting font to white
-[] Add grid to plots to look console
+[] Fix manual command error (can't send to non-existant client)
