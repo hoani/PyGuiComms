@@ -1,7 +1,7 @@
 from PySide2.QtWidgets import QApplication
 from PySide2 import QtCore, QtWidgets, QtGui
 import extraConsole
-import sys
+import sys, os
 import vect
 import math
 import numpy as np
@@ -11,81 +11,15 @@ except:
   pass
 import plotCanvas
 
-class RoboCommsClient():
-  def __init__(self, client = None):
-    self.client = client
-    self.client_connecting = False
-    self.subscribers = dict()
-
-  def upkeep(self):
-    if self.client == None:
-      return
-
-    if self.client.connected == False:
-      if self.client_connecting == False:
-        self.client_connecting = True
-        try:
-          self.client.connect()
-        except:
-          pass
-        self.client_connecting = False
-    else:
-      try:
-        data = self.client.recv(1024)
-        if data != None:
-          print(data.decode('utf-8'))
-          self._process_packet(data)
-        else:
-          self.client.connected = False
-          
-      except OSError:
-        pass
-      except Exception as e:
-        print(e)
-
-  def _client_send(self, data):
-    if self.client == None:
-      return
-    else:
-      self.client.send(data)
-
-  def subscribe(self, item, callback):
-    if item in self.subscribers.keys:
-      self.subscribers[item].append(callback)
-    else:
-      self.subscribers[item] = [callback]
-
-  def _publish(self, item, payload):
-    if item in self.subscribers.keys:
-      for subscriber in self.subscribers[item]:
-        subscriber.callback(payload)
-
-  def _process_packet(self, data):
-    data = data.decode('utf-8')
-    for line in data.split('\n'):
-      items = line.split(' ')
-
-      if items[0] == "accel" or items[0] == "gyros" or items[0] == "magne":
-        if len(items) == 4:
-          accel_data = vect.Vec3(
-            float(items[1]),
-            float(items[2]),
-            float(items[3])
-          )
-          self._publish(items[0], accel_data)
-
 
 class MainWindow(QtWidgets.QMainWindow):
   def __init__(self, parent=None):
     super().__init__(parent)
-    self.client = None
-    self.client_connecting = False
     self.show()
     self.upkeep_timer = []
     self.manual_upkeep = None
     self.add_upkeep(100, self._upkeep)
     self.add_upkeep(50, self._manual_upkeep)
-    self.add_upkeep(10, self._client_upkeep)
     registration_timer = QtCore.QTimer(self)
     registration_timer.singleShot(1, self._register_widgets)
     try:
@@ -99,38 +33,12 @@ class MainWindow(QtWidgets.QMainWindow):
     timer.start(period_ms)
     timer.timeout.connect(callback)
 
-  def register_client(self, client):
-    self.client = client
-
   def _upkeep(self):
     pass
 
   def _manual_upkeep(self):
     if self.manual_upkeep != None:
       self.manual_upkeep()
-
-  def _client_upkeep(self):
-    if self.client.connected == False:
-      if self.client_connecting == False:
-        self.client_connecting = True
-        try:
-          self.client.connect()
-        except:
-          pass
-        self.client_connecting = False
-    else:
-      try:
-        data = self.client.recv(1024)
-        if data != None:
-          print(data.decode('utf-8'))
-          self._process_packet(data)
-        else:
-          self.client.connected = False
-          
-      except OSError:
-        pass
-      except Exception as e:
-        print(e)
 
   def _register_widgets(self):
     button_disable = self.findChild(QtWidgets.QPushButton, 'controlDisable')
@@ -282,49 +190,28 @@ class MainWindow(QtWidgets.QMainWindow):
     else:
       arr[index] = value
 
-  def _process_packet(self, data):
-    data = data.decode('utf-8')
-    for line in data.split('\n'):
-      items = line.split(' ')
-      if items[0] == "accel":
-        if len(items) == 4:
-          self.accelerometer.x.setText("{:.2f}".format(float(items[1])))
-          self.accelerometer.y.setText("{:.2f}".format(float(items[2])))
-          self.accelerometer.z.setText("{:.2f}".format(float(items[3])))
-
-          self.plot_accel.update_data(vect.Vec3(float(items[1]), float(items[2]), float(items[3])))
-
-      if items[0] == "gyros":
-        if len(items) == 4:
-          self.gyroscope.x.setText("{:.2f}".format(float(items[1])))
-          self.gyroscope.y.setText("{:.2f}".format(float(items[2])))
-          self.gyroscope.z.setText("{:.2f}".format(float(items[3])))
-
-          self.plot_gyro.update_data(vect.Vec3(float(items[1]), float(items[2]), float(items[3])))
-
-      if items[0] == "magne":
-        if len(items) == 4:
-          self.magnetometer.x.setText("{:.2f}".format(float(items[1])))
-          self.magnetometer.y.setText("{:.2f}".format(float(items[2])))
-          self.magnetometer.z.setText("{:.2f}".format(float(items[3])))
-          self.plot_mag.update_data(vect.Vec3(float(items[1]), float(items[2]), float(items[3])))
-
-
-  def data_update_accelerometers(self, data):
+  def data_update_accelerometer(self, data):
     self.accelerometer.x.setText("{:.2f}".format(data.x))
     self.accelerometer.y.setText("{:.2f}".format(data.y))
     self.accelerometer.z.setText("{:.2f}".format(data.z))
     self.plot_accel.update_data(vect.Vec3(data.x, data.y, data.z))
 
-  def data_update_gyroscopes(self, data):
-    self.gyroscopes.x.setText("{:.2f}".format(data.x))
-    self.gyroscopes.y.setText("{:.2f}".format(data.y))
-    self.gyroscopes.z.setText("{:.2f}".format(data.z))
+  def data_update_gyroscope(self, data):
+    self.gyroscope.x.setText("{:.2f}".format(data.x))
+    self.gyroscope.y.setText("{:.2f}".format(data.y))
+    self.gyroscope.z.setText("{:.2f}".format(data.z))
     self.plot_gyro.update_data(vect.Vec3(data.x, data.y, data.z))
 
-  def data_update_magnetometers(self, data):
+  def data_update_magnetometer(self, data):
     self.magnetometer.x.setText("{:.2f}".format(data.x))
     self.magnetometer.y.setText("{:.2f}".format(data.y))
     self.magnetometer.z.setText("{:.2f}".format(data.z))
     self.plot_mag.update_data(vect.Vec3(data.x, data.y, data.z))
+
+  def set_subscriptions(self, subscribe):
+    subscribe('accel', self.data_update_accelerometer)
+    subscribe('gyros', self.data_update_gyroscope)
+    subscribe('magne', self.data_update_magnetometer)
+
+
 

@@ -1,4 +1,7 @@
-[] decouple client logic from baseUi
 [] Make plotting independent of data type
 [] Move all non-essential UI elements out of baseUi
 [] Integrate infrared sensor
+[] Integrate webcam
+[] Set a max cap to console
+[] change plotting font to white
+[] Add grid to plots to look console
