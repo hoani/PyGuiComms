@@ -1,7 +1,7 @@
 from PySide2 import QtWidgets
 import sys, os
 
-class ControlUi():
+class Ui():
   def __init__(self, main_window):
     self.main_window = main_window
 

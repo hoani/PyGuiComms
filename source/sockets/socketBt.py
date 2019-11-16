@@ -4,7 +4,7 @@ using PyBluez (with Python 2).
 """
 import bluetooth
 
-class BtClient(bluetooth.BluetoothSocket):
+class SocketBt(bluetooth.BluetoothSocket):
   def __init__(self, mac_addr, port):
     self.server = (mac_addr, port)
     self.connected = False

@@ -1,8 +1,8 @@
 from PySide2 import QtWidgets, QtGui
-import extraConsole
+from source.ui import extraConsole
 import sys, os
 
-class DebugUi:
+class Ui:
   def __init__(self, main_window):
     self.main_window = main_window
 

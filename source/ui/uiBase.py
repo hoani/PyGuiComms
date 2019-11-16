@@ -1,11 +1,27 @@
 from PySide2.QtWidgets import QApplication
 from PySide2 import QtCore, QtWidgets, QtGui
+from PySide2.QtUiTools import QUiLoader
+from PySide2.QtCore import QFile
 import sys, os
 import numpy as np
 try:
   import qdarkstyle
 except:
   pass
+
+def load_from_file(filepath):
+  ui_file = QFile(filepath)
+  ui_file.open(QFile.ReadOnly)
+  loader = QUiLoader()
+  loader.registerCustomWidget(MainWindow)
+  window = loader.load(ui_file)
+  ui_file.close()
+  return window
+
+def load_ui_elements(window, comms, ui_element_list):
+  for ui_element in ui_element_list:
+    ui = ui_element.Ui(window)
+    ui.set_subscriptions(comms.subscribe)
 
 class MainWindow(QtWidgets.QMainWindow):
   def __init__(self, parent=None):

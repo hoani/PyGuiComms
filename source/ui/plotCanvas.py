@@ -3,13 +3,9 @@ import numpy as np
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 import matplotlib
 import matplotlib.pyplot as pyplot
-import vect
-
-
-
+from source.utilities import vect
 
 class PlotCanvas(FigureCanvas):
-
   def __init__(self, data, title= None, parent=None, width=5, height=4, dpi=100):
     fig = matplotlib.figure.Figure(figsize=(width, height), dpi=dpi)
     fig.set_facecolor('#00000000')

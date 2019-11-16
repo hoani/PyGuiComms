@@ -1,5 +1,5 @@
 import sys, os
-import vect
+from source.utilities import vect
 import queue
 
 class CommsClient():

@@ -1,6 +1,6 @@
 
 
-class EchoClient():
+class SocketFake():
   def __init__(self, mac_addr, port):
     self.server = (mac_addr, port)
     self.connected = False

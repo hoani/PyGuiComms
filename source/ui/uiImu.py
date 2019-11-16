@@ -1,9 +1,9 @@
 from PySide2 import QtWidgets
 import sys, os
-import vect
-import plotCanvas
+from source.utilities import vect
+from source.ui import plotCanvas
 
-class ImuUi():
+class Ui():
   def __init__(self, main_window):
     self.main_window = main_window
     # self.main_window.add_ui(self)
