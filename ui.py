@@ -3,6 +3,7 @@ from PySide2.QtUiTools import QUiLoader
 from PySide2.QtWidgets import QApplication
 from PySide2.QtCore import QFile
 from PySide2 import QtCore, QtWidgets
+import queue
 import vect
 import baseUi
 import commsClient
@@ -22,8 +23,10 @@ if __name__ == '__main__':
     import btClient
     ClientSocket = btClient.BtClient
     
+  command_queue = queue.Queue()
+
   client_socket = ClientSocket(serverMACAddress, port)
-  comms = commsClient.CommsClient(client_socket)
+  comms = commsClient.CommsClient(client_socket, command_queue)
 
   app = QApplication(sys.argv)
   ui_file = QFile('ManualControl.ui')
@@ -34,7 +37,9 @@ if __name__ == '__main__':
   window = loader.load(ui_file)
   
   window.set_subscriptions(comms.subscribe)
+  window.set_command_queue(command_queue)
   window.add_upkeep(20, comms.upkeep)
+
 
   ui_file.close()
 

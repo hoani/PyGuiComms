@@ -1,11 +1,13 @@
 import sys, os
 import vect
+import queue
 
 class CommsClient():
-  def __init__(self, client = None):
+  def __init__(self, client = None, my_queue = queue.Queue()):
     self.client = client
     self.client_connecting = False
     self.subscribers = dict()
+    self.command_queue = my_queue
 
   def upkeep(self):
     if self.client == None:
@@ -27,7 +29,7 @@ class CommsClient():
           self._process_packet(data)
         else:
           self.client.connected = False
-          
+        
       except OSError:
         pass
       except Exception as e:
@@ -35,6 +37,40 @@ class CommsClient():
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type,',', fname,', ln', exc_tb.tb_lineno)
         print(e)
+
+      while True:
+        try:
+          command = self.command_queue.get_nowait()
+          if command == " " or command == (""):
+            raise Exception("WTF?!")
+
+          if command == None or command == False:
+            break
+          if isinstance(command, list) == False:
+            if isinstance(command, str):
+              command = [command]
+            else:
+              command = list(command)
+
+          for idx, item in enumerate(command):
+            if isinstance(item, str):
+              continue
+            elif isinstance(item, float):
+              command[idx] = "{:0.2f}".format(item)
+            else:
+              command[idx] = str(item)
+          # Opportunity for improvement - verification of commands
+          payload = " ".join(command) + "\n"
+          payload = payload.encode('utf-8')
+          self.client.send(payload)
+          
+        except queue.Empty:
+          break
+        except Exception as e:
+          exc_type, exc_obj, exc_tb = sys.exc_info()
+          fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+          print(exc_type,',', fname,', ln', exc_tb.tb_lineno)
+          print(e)
 
   def _client_send(self, data):
     if self.client == None:

@@ -4,6 +4,7 @@ import extraConsole
 import sys, os
 import vect
 import math
+import queue
 import numpy as np
 try:
   import qdarkstyle
@@ -18,6 +19,7 @@ class MainWindow(QtWidgets.QMainWindow):
     self.show()
     self.upkeep_timer = []
     self.manual_upkeep = None
+    self.command_queue = None
     self.add_upkeep(100, self._upkeep)
     self.add_upkeep(50, self._manual_upkeep)
     registration_timer = QtCore.QTimer(self)
@@ -132,10 +134,10 @@ class MainWindow(QtWidgets.QMainWindow):
     self.console.moveCursor(QtGui.QTextCursor.End)
 
   def _control_disable(self):
-    self._client_send(b'disable')
+    self._command_queue_place(('disable'))
 
   def _control_auto(self):
-    self._client_send(b'auto')
+    self._command_queue_place(('auto'))
 
   def _manual_speed(self):
     self.manual_speed = self.slider_manual_speed.value()/100.0
@@ -153,13 +155,10 @@ class MainWindow(QtWidgets.QMainWindow):
     self._control_manual_cmd("RT")
 
   def _control_manual_cmd(self, dir):
-    self._client_send(
-      b'manual ' +
-      dir.encode('utf-8') +
-      b' ' +
-      "{:0.2f}".format(self.manual_speed).encode('utf-8') +
-      b'\n'
-      )
+    self._command_queue_place(('manual', dir, self.manual_speed))
+
+  def _command_queue_place(self, item):
+    self.command_queue.put(item)
 
   def _control_manual_forward_pressed(self):
     self.manual_upkeep = self._control_manual_forward
@@ -190,28 +189,43 @@ class MainWindow(QtWidgets.QMainWindow):
     else:
       arr[index] = value
 
+  def _update_text_field(self, item, value, pattern="{:.3f}"):
+    if item == None:
+      return
+    else:
+      item.setText(pattern.format(value))
+
+  def _update_plot_vec3(self, item, vec3):
+    if item == None:
+      return
+    else:
+      item.update_data(vec3)
+
   def data_update_accelerometer(self, data):
-    self.accelerometer.x.setText("{:.2f}".format(data.x))
-    self.accelerometer.y.setText("{:.2f}".format(data.y))
-    self.accelerometer.z.setText("{:.2f}".format(data.z))
-    self.plot_accel.update_data(vect.Vec3(data.x, data.y, data.z))
+    self._update_text_field(self.accelerometer.x, data.x)
+    self._update_text_field(self.accelerometer.y, data.y)
+    self._update_text_field(self.accelerometer.z, data.z)
+    self._update_plot_vec3(self.plot_accel, data)
 
   def data_update_gyroscope(self, data):
-    self.gyroscope.x.setText("{:.2f}".format(data.x))
-    self.gyroscope.y.setText("{:.2f}".format(data.y))
-    self.gyroscope.z.setText("{:.2f}".format(data.z))
-    self.plot_gyro.update_data(vect.Vec3(data.x, data.y, data.z))
+    self._update_text_field(self.gyroscope.x, data.x)
+    self._update_text_field(self.gyroscope.y, data.y)
+    self._update_text_field(self.gyroscope.z, data.z)
+    self._update_plot_vec3(self.plot_gyro, data)
 
   def data_update_magnetometer(self, data):
-    self.magnetometer.x.setText("{:.2f}".format(data.x))
-    self.magnetometer.y.setText("{:.2f}".format(data.y))
-    self.magnetometer.z.setText("{:.2f}".format(data.z))
-    self.plot_mag.update_data(vect.Vec3(data.x, data.y, data.z))
+    self._update_text_field(self.magnetometer.x, data.x)
+    self._update_text_field(self.magnetometer.y, data.y)
+    self._update_text_field(self.magnetometer.z, data.z)
+    self._update_plot_vec3(self.plot_mag, data)
 
   def set_subscriptions(self, subscribe):
     subscribe('accel', self.data_update_accelerometer)
     subscribe('gyros', self.data_update_gyroscope)
     subscribe('magne', self.data_update_magnetometer)
+
+  def set_command_queue(self, queue):
+    self.command_queue = queue
 
 
 

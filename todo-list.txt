@@ -3,4 +3,3 @@
 [] Integrate infrared sensor
 [] Integrate webcam
 [] Set a max cap to console
-[] Fix manual command error (can't send to non-existant client)
