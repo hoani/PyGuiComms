@@ -5,12 +5,8 @@ from PySide2.QtCore import QFile
 from PySide2 import QtCore, QtWidgets
 import queue
 import vect
-import baseUi
+import baseUi, imuUi, controlUi, debugUi
 import commsClient
-
-
-
-
 
 if __name__ == '__main__':
   echo = False
@@ -35,11 +31,17 @@ if __name__ == '__main__':
   loader = QUiLoader()
   loader.registerCustomWidget(baseUi.MainWindow)
   window = loader.load(ui_file)
-  
-  window.set_subscriptions(comms.subscribe)
   window.set_command_queue(command_queue)
   window.add_upkeep(20, comms.upkeep)
 
+  ui_imu = imuUi.ImuUi(window)
+  ui_imu.set_subscriptions(comms.subscribe)
+
+  ui_control = controlUi.ControlUi(window)
+  ui_control.set_subscriptions(comms.subscribe)
+
+  ui_debug = debugUi.DebugUi(window)
+  ui_debug.set_subscriptions(comms.subscribe)
 
   ui_file.close()
 
