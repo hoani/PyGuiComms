@@ -18,10 +18,7 @@ def load_from_file(filepath):
   ui_file.close()
   return window
 
-def load_ui_elements(window, comms, ui_element_list):
-  for ui_element in ui_element_list:
-    ui = ui_element.Ui(window)
-    ui.set_subscriptions(comms.subscribe)
+
 
 class MainWindow(QtWidgets.QMainWindow):
   def __init__(self, parent=None):
@@ -29,6 +26,7 @@ class MainWindow(QtWidgets.QMainWindow):
     self.show()
     self.command_queue = None
     self.upkeep_timer = []
+    self.ui_objs = []
     try:
         self.setStyleSheet(qdarkstyle.load_stylesheet_pyside2())
     except:
@@ -57,6 +55,12 @@ class MainWindow(QtWidgets.QMainWindow):
 
   def command_queue_place(self, item):
     self.command_queue.put(item)
+
+  def load_ui_elements(self, comms, ui_element_list):
+    for idx, ui_element in enumerate(ui_element_list):
+      ui = ui_element.Ui(self)
+      ui.set_subscriptions(comms.subscribe)
+      self.ui_objs.append(ui)
 
 
 

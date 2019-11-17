@@ -3,5 +3,4 @@
 [] Integrate webcam
 [] Set a max cap to console
 [] Message logging
-[] Add websocket client
-[] Add command line args to select socket
+[] Big Project - Gui Launcher

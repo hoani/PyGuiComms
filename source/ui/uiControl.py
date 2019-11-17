@@ -19,6 +19,7 @@ class Ui():
 
     if button_disable != None:
       button_disable.clicked.connect(self._control_disable)
+
     if button_auto != None:
       button_auto.clicked.connect(self._control_auto)
 

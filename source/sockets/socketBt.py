@@ -1,7 +1,4 @@
-"""
-A simple Python script to send messages to a sever over Bluetooth
-using PyBluez (with Python 2).
-"""
+
 import bluetooth
 
 class SocketBt(bluetooth.BluetoothSocket):
