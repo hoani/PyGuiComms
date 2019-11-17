@@ -2,5 +2,9 @@
 [] Integrate infrared sensor
 [] Integrate webcam
 [] Set a max cap to console
-[] Message logging
 [] Big Project - Gui Launcher
+[] Add power status UI
+[] Add servo UI
+[] Add Navigation UI
+[] Add Proxy
+[] Add file headers and descriptions
