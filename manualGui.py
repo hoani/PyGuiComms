@@ -1,9 +1,10 @@
 import sys, io
 from PySide2.QtWidgets import QApplication
 import queue
-from source.utilities import cli
+from source.utilities import cli, logger
 from source.ui import uiBase, uiImu, uiControl, uiDebug
 from source.comms import commsClient
+
 
 if __name__ == '__main__':
 
@@ -26,7 +27,13 @@ if __name__ == '__main__':
     ClientSocket = socketBt.SocketBt
     serverAddress = args.bluetooth[0]
     port = args.bluetooth[1]
-    
+
+  if args.data_logging != None:
+    log_entries = logger.LogEntries()
+  else:
+    log_entries = None
+    log_file = None
+    log = None
 
   app = QApplication(sys.argv)
 
@@ -38,9 +45,17 @@ if __name__ == '__main__':
   window.add_upkeep(20, comms.upkeep)
   window.set_command_queue(command_queue)
 
-  window.load_ui_elements(comms, [uiImu, uiControl, uiDebug])
+  window.load_ui_elements([uiImu, uiControl, uiDebug], comms, log_entries)
+
+  if log_entries != None:
+    log_file = open(args.data_logging, "w+")
+    log = logger.Logger(log_file, log_entries)
+
+  window.add_upkeep(100, log.publish)
 
   sys.exit(app.exec_())
+
+  log_file.close()
 
 
 

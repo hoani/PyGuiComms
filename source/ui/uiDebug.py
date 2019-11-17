@@ -14,5 +14,8 @@ class Ui:
   def set_subscriptions(self, subscribe):
     pass
 
+  def add_log_entries(self, log_entries):
+    pass
+
   def _console_cursor(self):
     self.console.moveCursor(QtGui.QTextCursor.End)

@@ -41,6 +41,9 @@ class Ui():
       self.slider_manual_speed.sliderReleased.connect(self._manual_speed) 
     self.manual_speed = 0.5
 
+  def add_log_entries(self, log_entries):
+    return
+
   def set_subscriptions(self, subscribe):
     return
 

@@ -54,7 +54,7 @@ class TestLoggerInitialization:
   def test_loggerWritesHeadings(self):
     keys = ["Test", "Test1", "Test2"]
     for key in keys:
-      self.logEntries.Add(key, callback_string)
+      self.logEntries.add(key, callback_string)
     log = logger.Logger(self.logFile, self.logEntries)
     
     expected = "Test,Test1,Test2\n"
@@ -67,49 +67,49 @@ class TestLoggerPublish:
     reset_callback_values()
 
   def test_loggerWritesData(self):
-    self.logEntries.Add("Test", callback_string)
+    self.logEntries.add("Test", callback_string)
     log = logger.Logger(self.logFile, self.logEntries)
     
-    log.Publish()
+    log.publish()
     expected = "Test\nStrData\n"
     assert(expected == self.logFile.writeData)
 
   def test_loggerPublishInvokesFlush(self):
-    self.logEntries.Add("Test", callback_string)
+    self.logEntries.add("Test", callback_string)
     log = logger.Logger(self.logFile, self.logEntries)
     
-    log.Publish()
+    log.publish()
     assert(self.logFile.flushed)
 
   def test_loggerWritesCSVRow(self):
-    self.logEntries.Add("Test", callback_string)
-    self.logEntries.Add("Test1", callback_string2)
+    self.logEntries.add("Test", callback_string)
+    self.logEntries.add("Test1", callback_string2)
     log = logger.Logger(self.logFile, self.logEntries)
     
-    log.Publish()
+    log.publish()
     expected = "Test,Test1\nStrData,StrData2\n"
     assert(expected == self.logFile.writeData)
 
   def test_logEntriesOrder(self): 
-    self.logEntries.Add("Test1", callback_string2)
-    self.logEntries.Add("Test", callback_string)
+    self.logEntries.add("Test1", callback_string2)
+    self.logEntries.add("Test", callback_string)
     log = logger.Logger(self.logFile, self.logEntries)
     
-    log.Publish()
+    log.publish()
     expected = "Test1,Test\nStrData2,StrData\n"
     assert(expected == self.logFile.writeData)
 
   def test_loggerWritesMultipleCSVRows(self):
     global intValue
-    self.logEntries.Add("Index", callback_integer)
-    self.logEntries.Add("Test", callback_string)
-    self.logEntries.Add("Test1", callback_string2)
+    self.logEntries.add("Index", callback_integer)
+    self.logEntries.add("Test", callback_string)
+    self.logEntries.add("Test1", callback_string2)
     log = logger.Logger(self.logFile, self.logEntries)
     
     intValue = 1
-    log.Publish()
+    log.publish()
     intValue = 2
-    log.Publish()
+    log.publish()
     expected = "Index,Test,Test1\n1,StrData,StrData2\n2,StrData,StrData2\n"
     assert(expected == self.logFile.writeData)
 
@@ -127,40 +127,40 @@ class TestLogEntries:
 
   def test_addEntry(self):
     key = "Test"
-    self.logEntries.Add(key, callback_string)
+    self.logEntries.add(key, callback_string)
     assert(self.logEntries[key] != None)
 
   def test_addEntries(self):
     keys = ["Test", "Test1", "Test2"]
     for key in keys:
-      self.logEntries.Add(key, callback_string)
+      self.logEntries.add(key, callback_string)
     
     for key in keys:
       assert(key in self.logEntries.keys())
 
   def test_getSingle(self):
     key = "Test"
-    self.logEntries.Add(key, callback_string)
+    self.logEntries.add(key, callback_string)
 
-    values = self.logEntries.Get()
+    values = self.logEntries.get()
     expected = callback_string()
 
     assert(values[key] == expected)
 
   def test_getSingleInteger(self):
     key = "Test"
-    self.logEntries.Add(key, callback_integer)
+    self.logEntries.add(key, callback_integer)
 
-    values = self.logEntries.Get()
+    values = self.logEntries.get()
     expected = str(callback_integer())
 
     assert(values[key] == expected)
 
   def test_getSingleFloat(self):
     key = "Test"
-    self.logEntries.Add(key, callback_float)
+    self.logEntries.add(key, callback_float)
 
-    values = self.logEntries.Get()
+    values = self.logEntries.get()
     expected = str(callback_float())
 
     assert(values[key] == expected)
@@ -168,17 +168,11 @@ class TestLogEntries:
   def test_getMultiple(self):
     keys = ["Test", "Test1", "Test2"]
     for key in keys:
-      self.logEntries.Add(key, callback_string)
+      self.logEntries.add(key, callback_string)
 
-    values = self.logEntries.Get()
+    values = self.logEntries.get()
     expected = callback_string()
 
     for key in keys:
       assert(values[key] == expected)
-
-
-
-
-
-
 

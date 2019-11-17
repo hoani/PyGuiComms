@@ -3,6 +3,7 @@ from PySide2 import QtCore, QtWidgets, QtGui
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtCore import QFile
 import sys, os
+import datetime
 import numpy as np
 try:
   import qdarkstyle
@@ -56,11 +57,19 @@ class MainWindow(QtWidgets.QMainWindow):
   def command_queue_place(self, item):
     self.command_queue.put(item)
 
-  def load_ui_elements(self, comms, ui_element_list):
+  def load_ui_elements(self, ui_element_list, comms, log_entries):
+    if log_entries != None:
+      log_entries.add('timestamp', self._get_timestamp)
+
     for idx, ui_element in enumerate(ui_element_list):
       ui = ui_element.Ui(self)
       ui.set_subscriptions(comms.subscribe)
+      if log_entries != None:
+        ui.add_log_entries(log_entries)
       self.ui_objs.append(ui)
+
+  def _get_timestamp(self):
+    return datetime.datetime.now().timestamp()
 
 
 

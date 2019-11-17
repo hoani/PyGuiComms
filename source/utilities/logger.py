@@ -1,10 +1,10 @@
 
 
 class LogEntries(dict):
-  def Add(self, key, callback):
+  def add(self, key, callback):
     self[key] = callback
 
-  def Get(self):
+  def get(self):
     values = {}
     for key in self.keys():
       callback = self[key]
@@ -24,10 +24,10 @@ class Logger:
     header = header[0:-1] + '\n'
     self.file.write(header)
 
-  def Publish(self):
+  def publish(self):
     line = ""
     # Note: as of python 3.7 a dict is guaranteed to have insertion-order preservation
-    values = self.entries.Get()
+    values = self.entries.get()
     for key in self.entries.keys():
       line += values[key] + ","
 

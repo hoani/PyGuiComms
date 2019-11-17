@@ -1,4 +1,5 @@
 import argparse
+from datetime import datetime
 
 def get_args():
   parser = argparse.ArgumentParser(description='A robot GUI')
@@ -24,7 +25,27 @@ def get_args():
     help="Run in no-connect mode", 
     action='store_true'
     )
+  
+  parser.add_argument(
+    '--data-logging',
+    help="Enable data logging as a csv for analysis",
+    action="store_const",
+    default=None,
+    const = datetime.now().strftime("%Y%m%d-%H%M%S_log.csv")
+  )
+
+  parser.add_argument(
+    '--event-logging',
+    help="Enable event logging - logs all stdout",
+    action="store_const",
+    default=None,
+    const = datetime.now().strftime("%Y%m%d-%H%M%S_event.txt")
+  )
 
   args = parser.parse_args()
 
   return args
+
+if __name__ == "__main__":
+  print("Args:")
+  print(get_args())
