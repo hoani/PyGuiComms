@@ -1,4 +1,7 @@
-if __name__ == '__main__':
-  from source.ui import uiExecute
-  gui = uiExecute.UiExecute("json/settings.json", "ui/ManualControl.ui")
+# Author: Hoani
+#
+# Manual control GUI
+from source.ui import uiExecute
 
+if __name__ == '__main__':
+  gui = uiExecute.UiExecute("ui/ManualControl.ui", "json/settings.json", "json/widgets.json")

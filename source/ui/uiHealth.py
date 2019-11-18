@@ -20,7 +20,7 @@ class Ui():
 
     self.data_max = 50
 
-    self.plot_cpu_usage = plotCanvas.PlotCanvas(0, title="Accel (%)")
+    self.plot_cpu_usage = plotCanvas.PlotCanvas(0, title="Cpu Usage (%)")
     self.plot_layout.addWidget(self.plot_cpu_usage)
 
     self.label_cpu_usage = self.main_window.findChild(QtWidgets.QLineEdit, 'labelCpuUsage')
