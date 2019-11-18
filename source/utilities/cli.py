@@ -1,12 +1,13 @@
 import argparse
 from datetime import datetime
 
-def get_args():
+def get_args(default_settings):
+
   parser = argparse.ArgumentParser(description='A robot GUI')
   parser.add_argument(
     '--bluetooth', 
     help="Add host bluetooth port, requires MAC address and port number",
-    default=['38:D2:69:E1:11:CB', 3],
+    default=[default_settings["bluetooth"]["address"], default_settings["bluetooth"]["port"]],
     metavar=("MAC","port"),
     nargs=2,
     type=str

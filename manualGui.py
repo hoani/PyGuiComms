@@ -4,11 +4,14 @@ import queue
 from source.utilities import cli, logger
 from source.ui import uiBase, uiImu, uiControl, uiDebug
 from source.comms import commsClient
+import json
 
 
 if __name__ == '__main__':
-
-  args = cli.get_args()
+  setting_file = open("json/settings.json", "r")
+  settings = json.load(setting_file)
+  setting_file.close()
+  args = cli.get_args(settings["default"])
 
   useTcp = True
   
@@ -50,8 +53,7 @@ if __name__ == '__main__':
   if log_entries != None:
     log_file = open(args.data_logging, "w+")
     log = logger.Logger(log_file, log_entries)
-
-  window.add_upkeep(100, log.publish)
+    window.add_upkeep(100, log.publish)
 
   sys.exit(app.exec_())
 
