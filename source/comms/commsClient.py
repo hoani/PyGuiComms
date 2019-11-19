@@ -1,3 +1,12 @@
+# Author: Hoani
+#
+# Client comms object for sending intercepting and delivering packets to Application 
+# subscribers.
+#
+# Data flow:
+#     Socket -> CommsClient -> Subscribers
+# Eventually a translation object will subscribe to comms client and will take application subscribers.
+
 import sys, os
 from source.utilities import vect
 import queue

@@ -1,3 +1,6 @@
+# Author: Hoani
+#
+# Provides a tcp client socket which can be accessed for communications.
 
 import socket
 

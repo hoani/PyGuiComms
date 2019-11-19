@@ -1,3 +1,8 @@
+# Author: Hoani
+#
+# Adds an additional console to std out
+# Allows print statements to show up in the terminal and on UI elements.
+
 import sys, io
 
 class extraConsole(io.StringIO):

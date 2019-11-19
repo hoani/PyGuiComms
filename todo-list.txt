@@ -1,10 +1,10 @@
+[] Big Project - Gui Launcher As Proxy
+[] Separate logger from ui elements
 [] Make plotting independent of data type
 [] Integrate infrared sensor
-[] Integrate webcam
-[] Set a max cap to console
-[] Big Project - Gui Launcher
 [] Add power status UI
 [] Add servo UI
 [] Add Navigation UI
 [] Add Proxy
 [] Add file headers and descriptions
+[] Integrate webcam

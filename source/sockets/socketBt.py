@@ -1,3 +1,6 @@
+# Author: Hoani
+#
+# Provides a bluetooth client socket which can be accessed for communications.
 
 import bluetooth
 
