@@ -45,11 +45,11 @@ class MainWindow(QtWidgets.QMainWindow):
     else:
       item.setText(pattern.format(value))
 
-  def update_plot_vec3(self, item, vec3):
+  def update_plot_vec3(self, item, t, vec3):
     if item == None:
       return
     else:
-      item.update_data(vec3)
+      item.update_data(t, vec3)
 
   def set_command_queue(self, queue):
     self.command_queue = queue
