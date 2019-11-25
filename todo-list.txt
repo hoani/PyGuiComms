@@ -1,6 +1,5 @@
 [] Big Project - Gui Launcher As Proxy
 [] Separate logger from ui elements
-[] Make plotting independent of data type
 [] Integrate infrared sensor
 [] Add power status UI
 [] Add servo UI
