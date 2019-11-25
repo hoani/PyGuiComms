@@ -95,7 +95,7 @@ class TestSetPacketEncode():
     self.codec = commsCodec.Codec(protocol_file_path)
 
   def test_simple_u8(self):
-    expected = ("S0002,a5\n").encode('utf-8')
+    expected = ("S0002:a5\n").encode('utf-8')
     packet = commsCodec.Packet("set", "protocol/version/major", (0xa5))
     result = self.codec.encode(packet)
     assert(result == expected)

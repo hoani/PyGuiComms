@@ -5,16 +5,15 @@
     "patch": 0
   },
   "category": {
-    "get": { "encode": "G" },
-    "set": { "encode": "S" },
-    "ack": { "encode": "A" },
-    "nak": { "encode": "N" }, 
-    "sub": { "encode": "B" },
-    "pub": { "encode": "P" }
+    "get": "G",
+    "set": "S",
+    "ack": "A",
+    "nak": "N", 
+    "sub": "B",
+    "pub": "P"
   },
-  "end": {
-    "encode": "\n"
-  },
+  "separator": ":",
+  "end": "\n",
   "data": {
     "protocol": { "_addr": "0000", 
       "version": {

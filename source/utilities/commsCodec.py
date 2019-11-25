@@ -56,7 +56,7 @@ class Codec():
       self.protocol = json.load(protocol_file)
 
   def encode(self, packet):
-    encoded = self.protocol["category"][packet.category]["encode"]
+    encoded = self.protocol["category"][packet.category]
     if packet.path != None:
       path = packet.path.split("/")
       root = self.protocol["data"][path[0]]
@@ -65,7 +65,8 @@ class Codec():
         address += count_to_path(root, path[1:])
       encoded += "{:04x}".format(address)
     if packet.payload != None:
-      encoded += ",a5"
-    encoded += self.protocol["end"]["encode"]
+      encoded += self.protocol["separator"]
+      encoded += "{:02x}".format(packet.payload)
+    encoded += self.protocol["end"]
     return encoded.encode('utf-8')
 
