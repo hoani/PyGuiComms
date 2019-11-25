@@ -1,11 +1,10 @@
-
 {
   "version": {
     "major": 1,
     "minor": 0,
     "patch": 0
   },
-  "start": {
+  "category": {
     "get": { "encode": "G" },
     "set": { "encode": "S" },
     "ack": { "encode": "A" },

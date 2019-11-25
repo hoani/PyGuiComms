@@ -1,70 +1,68 @@
 
 import json
 
+def count_depth(root):
+  count = 0
+  if "type" in root.keys():
+    return 0
 
-def get_codec_protocol(protocol_file_path):
-  with open(protocol_file_path, "r") as protocol_file:
-    proto = json.load(protocol_file)
-  return proto
+  for key in root.keys():
+    if key[0] != "_":
+      count += 1
+      count += count_depth(root[key])
 
-class PacketFactory():
-  def __init__(self, packet_protocol):
-    self.protocol = packet_protocol
+  return count
 
-  def CommandPacket(self, command):
-    packet = Packet(self.protocol["command"], command)
-    return packet
 
-  def RequestPacket(self, item):
-    packet = Packet(self.protocol["command"], "request", self.protocol["data"]["items"][item]["encode"])
-    return packet
-
-class Packet():
-  def __init__(self, packet_protocol, item, payload=None):
-    self.protocol = packet_protocol
-    self.item = item
-    self.payload = payload
-
-  def encode(self):
-    encoded = self.protocol["encode"]
-    if self.item in self.protocol["items"]:
-      encoded += self.protocol["items"][self.item]["encode"]
-      encoded += self._encode_payload()
-      encoded += '\n'
-      return encoded.encode('utf-8')
+def count_to_path(root, path):
+  count = 0
+  if path == None:
+    return count_depth(root)
+  
+  search = path[0]
+  if search in root.keys():
+    for key in root.keys():
+      if key[0] != "_":
+        count += 1
+        if key != search:
+          if "type" in root[key]:
+            pass
+          else:
+            count += count_depth(root[key])
+        else:
+          break
     
+    if len(path) > 1:
+      incr = count_to_path(root[search], path[1:])
+      if (incr != None):
+        count += incr
+      else:
+        return None
+
+  else:
     return None
 
-  def _encode_payload(self):
-    encoded = ""
-    if self.payload != None:
-      for datum in self.payload:
-        encoded += self._encode_payload_datum(datum)
-    return encoded
-
-  def _encode_payload_datum(self, datum):
-    if isinstance(datum, str):
-      return datum
-
-
-class CommandDecoder():
-  def __init__(self, command_protocol):
-    self.protocol = command_protocol
-    self.bytes = b''
-    
-  def decode(self):
-    pass
+  return count
+  
+class Packet():
+  def __init__(self, category, path, payload=None):
+    self.category = category
+    self.path = path
+    self.payload = payload
 
 class Codec():
   def __init__(self, protocol_file_path):
-    pass
+    with open(protocol_file_path, "r") as protocol_file:
+      self.protocol = json.load(protocol_file)
 
-  def encode(self, which, address):
-    if (which in self.proto.keys()):
-      encoded = self.proto[which]["encode"]
-      if address in self.proto[which]["address"]:
-        encoded += self.proto[which]["address"][address]
-        encoded += '\n'
-        return encoded.encode('utf-8')
-    
-    return encoded
+  def encode(self, packet):
+    encoded = self.protocol["category"][packet.category]["encode"]
+    path = packet.path.split("/")
+    root = self.protocol["data"][path[0]]
+    address = int(root["_addr"])
+    if path != None and len(path) > 1:
+      address += count_to_path(root, path[1:])
+    encoded += "{:04x}".format(address)
+    encoded += self.protocol["end"]["encode"]
+    return encoded.encode('utf-8')
+
