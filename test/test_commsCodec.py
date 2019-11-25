@@ -50,14 +50,30 @@ class TestCountToPath():
     result = commsCodec.count_to_path(self.root, ["NZ", "Christchurch"])
     assert(result == expected)
 
+class TestAckPacketEncode():
+
+  def setup_method(self):
+    protocol_file_path = "test/fakes/protocol.json"
+    self.codec = commsCodec.Codec(protocol_file_path)
+
+  def test_ack_encoding(self):
+    expected = ("A\n").encode('utf-8')
+    packet = commsCodec.Packet("ack")
+    result = self.codec.encode(packet)
+    assert(result == expected)
+
+  def test_nack_encoding(self):
+    expected = ("N\n").encode('utf-8')
+    packet = commsCodec.Packet("nak")
+    result = self.codec.encode(packet)
+    assert(result == expected)
+
+
 class TestGetPacketEncode():
 
   def setup_method(self):
     protocol_file_path = "test/fakes/protocol.json"
     self.codec = commsCodec.Codec(protocol_file_path)
-    
-    with open(protocol_file_path, "r") as protocol_file:
-      self.settings = json.load(protocol_file)
 
   def test_simple_encoding(self):
     expected = ("G0000\n").encode('utf-8')
@@ -66,8 +82,23 @@ class TestGetPacketEncode():
     assert(result == expected)
 
   def test_nested_encoding(self):
-    expected = ("G0005\n").encode('utf-8')
+    expected = ("G0004\n").encode('utf-8')
     packet = commsCodec.Packet("get", "protocol/version/patch")
     result = self.codec.encode(packet)
     assert(result == expected)
+
+
+class TestSetPacketEncode():
+
+  def setup_method(self):
+    protocol_file_path = "test/fakes/protocol.json"
+    self.codec = commsCodec.Codec(protocol_file_path)
+
+  def test_simple_u8(self):
+    expected = ("S0002,a5\n").encode('utf-8')
+    packet = commsCodec.Packet("set", "protocol/version/major", (0xa5))
+    result = self.codec.encode(packet)
+    assert(result == expected)
+
+  # todo: Strings, u16, u32, u64, u128, i16, i32, i64, i128, floats, booleans
 

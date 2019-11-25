@@ -17,12 +17,12 @@
   },
   "data": {
     "protocol": { "_addr": "0000", 
-      "name": { "type": "u8", "set": false },
       "version": {
         "major": { "type": "u8", "set": false },
         "minor": { "type": "u8", "set": false },
         "patch": { "type": "u16", "set": false }
-      }
+      },
+      "name": { "type": "string", "set": false }
     },
     "ping": { "_addr": "1000", "size": 1, "type":  "bool", "set": false },
     "health": { "_addr": "1100",

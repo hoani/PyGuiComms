@@ -45,7 +45,7 @@ def count_to_path(root, path):
   return count
   
 class Packet():
-  def __init__(self, category, path, payload=None):
+  def __init__(self, category, path=None, payload=None):
     self.category = category
     self.path = path
     self.payload = payload
@@ -57,12 +57,15 @@ class Codec():
 
   def encode(self, packet):
     encoded = self.protocol["category"][packet.category]["encode"]
-    path = packet.path.split("/")
-    root = self.protocol["data"][path[0]]
-    address = int(root["_addr"])
-    if path != None and len(path) > 1:
-      address += count_to_path(root, path[1:])
-    encoded += "{:04x}".format(address)
+    if packet.path != None:
+      path = packet.path.split("/")
+      root = self.protocol["data"][path[0]]
+      address = int(root["_addr"])
+      if len(path) > 1:
+        address += count_to_path(root, path[1:])
+      encoded += "{:04x}".format(address)
+    if packet.payload != None:
+      encoded += ",a5"
     encoded += self.protocol["end"]["encode"]
     return encoded.encode('utf-8')
 
