@@ -161,6 +161,18 @@ class TestSetPacketEncode():
     protocol_file_path = "test/fakes/protocol.json"
     self.codec = commsCodec.Codec(protocol_file_path)
 
+  def test_simple_string(self):
+    expected = ("S2001:Hoani's String\n").encode('utf-8')
+    packet = commsCodec.Packet("set", "typecheck/string", tuple(["Hoani's String"]))
+    result = self.codec.encode(packet)
+    assert(result == expected)
+
+  def test_simple_bool(self):
+    expected = ("S2002:1\n").encode('utf-8')
+    packet = commsCodec.Packet("set", "typecheck/boolean", tuple([True]))
+    result = self.codec.encode(packet)
+    assert(result == expected)
+
   def test_simple_u8(self):
     expected = ("S2003:a5\n").encode('utf-8')
     packet = commsCodec.Packet("set", "typecheck/uint8", tuple([0xa5]))
@@ -178,5 +190,43 @@ class TestSetPacketEncode():
     packet = commsCodec.Packet("set", "typecheck/uint32", tuple([0x102234]))
     result = self.codec.encode(packet)
     assert(result == expected)
-  # todo: Strings, u16, u32, u64, u128, i16, i32, i64, i128, floats, booleans
+
+  def test_simple_u64(self):
+    expected = ("S2006:0010223400000078\n").encode('utf-8')
+    packet = commsCodec.Packet("set", "typecheck/uint64", tuple([0x10223400000078]))
+    result = self.codec.encode(packet)
+    assert(result == expected)
+
+  def test_simple_i8(self):
+    expected = ("S2007:11\n").encode('utf-8')
+    packet = commsCodec.Packet("set", "typecheck/int8", tuple([0x11]))
+    result = self.codec.encode(packet)
+    assert(result == expected)
+
+  def test_negative_i8(self):
+    expected = ("S2007:ef\n").encode('utf-8')
+    packet = commsCodec.Packet("set", "typecheck/int8", tuple([-0x11]))
+    result = self.codec.encode(packet)
+    assert(result == expected)
+
+  # def test_simple_u16(self):
+  #   expected = ("S2008:0234\n").encode('utf-8')
+  #   packet = commsCodec.Packet("set", "typecheck/uint16", tuple([0x0234]))
+  #   result = self.codec.encode(packet)
+  #   assert(result == expected)
+
+  # def test_simple_u32(self):
+  #   expected = ("S2009:00102234\n").encode('utf-8')
+  #   packet = commsCodec.Packet("set", "typecheck/uint32", tuple([0x102234]))
+  #   result = self.codec.encode(packet)
+  #   assert(result == expected)
+
+  # def test_simple_u64(self):
+  #   expected = ("S200a:0010223400000078\n").encode('utf-8')
+  #   packet = commsCodec.Packet("set", "typecheck/uint64", tuple([0x10223400000078]))
+  #   result = self.codec.encode(packet)
+  #   assert(result == expected)
+  
+  
+  # todo: i8, i16, i32, i64, i128, floats, booleans
 

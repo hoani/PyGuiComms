@@ -69,6 +69,30 @@ def extract_types(root, path):
 
   return types
   
+def encode_types(item, typeof):
+  if typeof == "u8":
+    return "{:02x}".format(item)
+  elif typeof == "u16":
+    return "{:04x}".format(item)
+  elif typeof == "u32":
+    return "{:08x}".format(item)
+  elif typeof == "u64":
+    return "{:016x}".format(item)
+  if typeof == "i8":
+    return "{:02x}".format(item + 0x100 if item < 0 else item)
+  # elif typeof == "u16":
+  #   return "{:04x}".format(item)
+  # elif typeof == "u32":
+  #   return "{:08x}".format(item)
+  # elif typeof == "u64":
+  #   return "{:016x}".format(item)
+  elif typeof == "string":
+    return item
+  elif typeof == "bool":
+    return "1" if item == True else "0"
+  else:
+    return ""
+
 class Packet():
   def __init__(self, category, path=None, payload=None):
     self.category = category
@@ -90,15 +114,9 @@ class Codec():
         address += count_to_path(root, path[1:])
       encoded += "{:04x}".format(address)
     if packet.payload != None:
-      encoded += self.protocol["separator"]
       types = extract_types(root, path[1:])
-      print(types)
-      if types[0] == "u8":
-        encoded += "{:02x}".format(packet.payload[0])
-      elif types[0] == "u16":
-        encoded += "{:04x}".format(packet.payload[0])
-      else:
-        encoded += "{:08x}".format(packet.payload[0])
+      encoded += self.protocol["separator"]
+      encoded += encode_types(packet.payload[0], types[0])
 
     encoded += self.protocol["end"]
     return encoded.encode('utf-8')
