@@ -43,6 +43,31 @@ def count_to_path(root, path):
     return None
 
   return count
+
+def get_struct(root, path):
+  if path == []:
+    return root
+
+  if path[0] in root.keys():
+    if len(path) == 1:
+      return root[path[0]]
+    else:
+      return get_struct(root[path[0]], path[1:])
+  else:
+    return None
+
+def extract_types(root, path):
+  start = get_struct(root, path)
+  types = []
+  if start != None:
+    if "type" in start.keys():
+      types.append(start["type"])
+    else:
+      for key in start.keys():
+        if key[0] != "_":
+          types = types + extract_types(start[key], [])
+
+  return types
   
 class Packet():
   def __init__(self, category, path=None, payload=None):
@@ -60,13 +85,21 @@ class Codec():
     if packet.path != None:
       path = packet.path.split("/")
       root = self.protocol["data"][path[0]]
-      address = int(root["_addr"])
+      address = int(root["_addr"], 16)
       if len(path) > 1:
         address += count_to_path(root, path[1:])
       encoded += "{:04x}".format(address)
     if packet.payload != None:
       encoded += self.protocol["separator"]
-      encoded += "{:02x}".format(packet.payload)
+      types = extract_types(root, path[1:])
+      print(types)
+      if types[0] == "u8":
+        encoded += "{:02x}".format(packet.payload[0])
+      elif types[0] == "u16":
+        encoded += "{:04x}".format(packet.payload[0])
+      else:
+        encoded += "{:08x}".format(packet.payload[0])
+
     encoded += self.protocol["end"]
     return encoded.encode('utf-8')
 
