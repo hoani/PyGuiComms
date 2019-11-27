@@ -1,5 +1,5 @@
 
-import json
+import json, struct
 
 def count_depth(root):
   count = 0
@@ -68,28 +68,35 @@ def extract_types(root, path):
           types = types + extract_types(start[key], [])
 
   return types
+
+def clamp(value, min_value, max_value):
+  return max(min_value, min(value, max_value))
   
 def encode_types(item, typeof):
   if typeof == "u8":
-    return "{:02x}".format(item)
+    return "{:02x}".format(clamp(item, 0x00, 0xff))
   elif typeof == "u16":
-    return "{:04x}".format(item)
+    return "{:04x}".format(clamp(item, 0x0000, 0xffff))
   elif typeof == "u32":
-    return "{:08x}".format(item)
+    return "{:08x}".format(clamp(item, 0x00000000, 0xffffffff))
   elif typeof == "u64":
-    return "{:016x}".format(item)
+    return "{:016x}".format(clamp(item, 0x0000000000000000, 0xffffffffffffffff))
   if typeof == "i8":
     return "{:02x}".format(item + 0x100 if item < 0 else item)
-  # elif typeof == "u16":
-  #   return "{:04x}".format(item)
-  # elif typeof == "u32":
-  #   return "{:08x}".format(item)
-  # elif typeof == "u64":
-  #   return "{:016x}".format(item)
+  elif typeof == "i16":
+    return "{:04x}".format(item + 0x10000 if item < 0 else item)
+  elif typeof == "i32":
+    return "{:08x}".format(item + 0x100000000 if item < 0 else item)
+  elif typeof == "i64":
+    return "{:016x}".format(item + 0x10000000000000000 if item < 0 else item)
   elif typeof == "string":
     return item
   elif typeof == "bool":
     return "1" if item == True else "0"
+  elif typeof == "float":
+    return ''.join(format(x, '02x') for x in struct.pack('>f', item))
+  elif typeof == "double":
+    return ''.join(format(x, '02x') for x in struct.pack('>d', item))
   else:
     return ""
 
@@ -115,8 +122,10 @@ class Codec():
       encoded += "{:04x}".format(address)
     if packet.payload != None:
       types = extract_types(root, path[1:])
-      encoded += self.protocol["separator"]
-      encoded += encode_types(packet.payload[0], types[0])
+      count = min(len(types), len(packet.payload))
+      for i in range(count):
+        encoded += self.protocol["separator"]
+        encoded += encode_types(packet.payload[i], types[i])
 
     encoded += self.protocol["end"]
     return encoded.encode('utf-8')
