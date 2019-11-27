@@ -323,6 +323,40 @@ class TestSetPacketEncodeMultiple():
     result = self.codec.encode(packet)
     assert(result == expected)
 
+
+class TestSetPacketDecodeMultiple():
+  def setup_method(self):
+    protocol_file_path = "test/fakes/protocol.json"
+    self.codec = commsCodec.Codec(protocol_file_path)
+
+  def test_sequential(self):
+    expected = commsCodec.Packet("set", "protocol/version", tuple([0x12, 0x34, 0x567]))
+    result = self.codec.decode(("S0001:12:34:0567\n").encode('utf-8'))
+    assert(result.category == expected.category)
+    assert(result.path == expected.path)
+    assert(result.payload == expected.payload)
+
+  def test_non_sequential(self):
+    expected = commsCodec.Packet("set", "protocol", tuple([0x12, 0x34, 0x567, "Hoani"]))
+    result = self.codec.decode(("S0000:12:34:0567:Hoani\n").encode('utf-8'))
+    assert(result.category == expected.category)
+    assert(result.path == expected.path)
+    assert(result.payload == expected.payload)
+
+  def test_ignores_unused_payload_items(self):
+    expected = commsCodec.Packet("set", "protocol/version", tuple([0x12, 0x34, 0x567]))
+    result = self.codec.decode(("S0001:12:34:0567\n").encode('utf-8'))
+    assert(result.category == expected.category)
+    assert(result.path == expected.path)
+    assert(result.payload == expected.payload)
+
+  def test_ignores_unused_sequential_items(self):
+    expected = commsCodec.Packet("set", "protocol/version", tuple([0x12, 0x34]))
+    result = self.codec.decode(("S0001:12:34\n").encode('utf-8'))
+    assert(result.category == expected.category)
+    assert(result.path == expected.path)
+    assert(result.payload == expected.payload)
+
 class TestSetPacketEncodeSingle():
   def setup_method(self):
     protocol_file_path = "test/fakes/protocol.json"
