@@ -130,3 +130,21 @@ class Codec():
     encoded += self.protocol["end"]
     return encoded.encode('utf-8')
 
+  def decode(self, encoded):
+    category = None
+    path = None
+    payload = None
+    start = encoded[0]
+    parts = encoded[1:-1].split(self.protocol["separator"])
+    print(parts)
+    addr = parts[0]
+    if len(parts) > 0:
+      payload = parts[1:]
+    else:
+      payload = []
+    if start == "G":
+      category = "get"
+    if addr == "0000":
+      path = "protocol"
+    return Packet(category, path, payload)
+

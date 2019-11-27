@@ -154,6 +154,23 @@ class TestGetPacketEncode():
     result = self.codec.encode(packet)
     assert(result == expected)
 
+class TestGetPacketDecode():
+  def setup_method(self):
+    protocol_file_path = "test/fakes/protocol.json"
+    self.codec = commsCodec.Codec(protocol_file_path)
+
+  def test_simple_decoding(self):
+    expected = commsCodec.Packet("get", "protocol")
+    result = self.codec.decode("G0000\n")
+    assert(result.category == expected.category)
+    assert(result.path == expected.path)
+  
+  # def test_nested_decoding(self):
+  #   expected = commsCodec.Packet("get", "protocol/version/patch")
+  #   result = self.codec.decode("G0004\n")
+  #   assert(result.category == expected.category)
+  #   assert(result.path == expected.path)
+
 class TestSetPacketEncodeMultiple():
   def setup_method(self):
     protocol_file_path = "test/fakes/protocol.json"
