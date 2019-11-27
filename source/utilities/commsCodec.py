@@ -120,6 +120,54 @@ def encode_types(item, typeof):
   else:
     return ""
 
+def decode_unsigned(item, min_value, max_value):
+  try:
+    return clamp(int(item, 16), min_value, max_value)
+  except:
+    return min_value
+
+def decode_signed(item, bits):
+  try:
+    value = int(item, 16)
+    print(value)
+    min_value = 0x1 << (bits - 1)
+    if value > min_value:
+      value -= 0x1 << (bits)
+
+    return clamp(value, -min_value, min_value -1)
+  except:
+    return min_value
+
+def decode_types(item, typeof):
+  if typeof == "u8":
+    return decode_unsigned(item, 0x00, 0xff)
+  elif typeof == "u16":
+    return decode_unsigned(item, 0x0000, 0xffff)
+  elif typeof == "u32":
+    return decode_unsigned(item, 0x00000000, 0xffffffff)
+  elif typeof == "u64":
+    return decode_unsigned(item, 0x0000000000000000, 0xffffffffffffffff)
+  if typeof == "i8":
+    return decode_signed(item, 8)
+  elif typeof == "i16":
+    return decode_signed(item, 16)
+  elif typeof == "i32":
+    return decode_signed(item, 32)
+  elif typeof == "i64":
+    return decode_signed(item,64)
+  elif typeof == "string":
+    return item
+  elif typeof == "bool":
+    return True if item == "1" else False
+  elif typeof == "float":
+    [x] = struct.unpack('>f', bytearray.fromhex(item))
+    return x
+  elif typeof == "double":
+    [x] = struct.unpack('>d', bytearray.fromhex(item))
+    return x
+  else:
+    return ""
+
 class Packet():
   def __init__(self, category, path=None, payload=None):
     self.category = category
@@ -131,6 +179,7 @@ class Codec():
     with open(protocol_file_path, "r") as protocol_file:
       self.protocol = json.load(protocol_file)
     self._generate_address_map()
+    self._generate_category_map()
 
   def encode(self, packet):
     encoded = self.protocol["category"][packet.category]
@@ -154,19 +203,31 @@ class Codec():
   def decode(self, encoded):
     category = None
     path = None
-    payload = None
+    payload = []
+    encoded = encoded.decode('utf-8')
     start = encoded[0]
     parts = encoded[1:-1].split(self.protocol["separator"])
-    print(parts)
-    addr = parts[0]
-    if len(parts) > 0:
-      payload = parts[1:]
+    category = self.category_from_start(start)
+    if parts != ['']:
+      addr = parts[0]
+      path = self.path_from_address(addr)
+      path_array = path.split("/")
+      root = self.protocol["data"][path_array[0]]
+      types = extract_types(root, path_array[1:])
+      for (item, typeof) in tuple(zip(parts[1:], types)):
+        payload.append(decode_types(item, typeof))
+
+      payload = tuple(payload)
     else:
-      payload = []
-    if start == "G":
-      category = "get"
-    path = self.path_from_address(addr)
+      payload = None
+    
     return Packet(category, path, payload)
+
+  def category_from_start(self, start):
+    if start in self.category_map.keys():
+      return self.category_map[start]
+    else:
+      return None
 
   def path_from_address(self, address):
     try:
@@ -207,4 +268,10 @@ class Codec():
           self.address_map[self.protocol["data"][key]["_addr"]] = key
     # Sort the map
     self.address_map = dict(sorted(self.address_map.items()))
+
+  def _generate_category_map(self):
+    self.category_map = {}
+    for key in self.protocol["category"].keys():
+      self.category_map[self.protocol["category"][key]] = key
+    
 
