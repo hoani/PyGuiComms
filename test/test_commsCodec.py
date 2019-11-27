@@ -117,6 +117,49 @@ class TestCountToPath():
     result = commsCodec.count_to_path(self.root, ["NZ", "Christchurch"])
     assert(result == expected)
 
+class TestCountToPath():
+  def setup_method(self):
+    self.root = { "_addr": "0000",
+      "NZ": {
+        "Auckland": {
+          "GlenInnes": { "type": "u16", "set": False },
+          "Avondale": { "type": "float", "set": True}
+        },
+        "Hamilton": {"type": "u8", "set": True },
+        "Napier": { "type": "bool", "set": False }
+      },
+      "Rarotonga": { "type": "i32", "set": True }
+    }
+
+  def test_zero_counts(self):
+    expected = []
+    expected_count = 0
+    (result, result_count) = commsCodec.path_from_count(self.root, 0)
+    assert(result == expected)
+    assert(result_count == expected_count)
+
+  def test_simple_counts(self):
+    expected = ["NZ", "Auckland", "Avondale"]
+    expected_count = 0
+    (result, result_count) = commsCodec.path_from_count(self.root, 4)
+    assert(result == expected)
+    assert(result_count == expected_count)
+
+  def test_complex_counts(self):
+    expected = ["NZ", "Napier"]
+    expected_count = 0
+    (result, result_count) = commsCodec.path_from_count(self.root, 6)
+    assert(result == expected)
+    assert(result_count == expected_count)
+
+  def test_no_result(self):
+    expected = []
+    expected_count = 3
+    (result, result_count) = commsCodec.path_from_count(self.root, 10)
+    assert(result == expected)
+    assert(result_count == expected_count)
+
+
 class TestAckPacketEncode():
 
   def setup_method(self):
@@ -135,6 +178,55 @@ class TestAckPacketEncode():
     result = self.codec.encode(packet)
     assert(result == expected)
 
+
+class TestFromAddress():
+  def setup_method(self):
+    protocol_file_path = "test/fakes/protocol.json"
+    self.codec = commsCodec.Codec(protocol_file_path)
+
+  def test_address_map(self):
+    assert("0000" in self.codec.address_map.keys())
+    assert("1000" in self.codec.address_map.keys())
+    assert("1100" in self.codec.address_map.keys())
+    assert("2000" in self.codec.address_map.keys())
+    assert("8000" in self.codec.address_map.keys())
+    assert("1200" in self.codec.address_map.keys())
+    assert(self.codec.address_map["0000"] == "protocol")
+    assert(self.codec.address_map["1000"] == "ping")
+    assert(self.codec.address_map["1100"] == "health")
+    assert(self.codec.address_map["2000"] == "typecheck")
+    assert(self.codec.address_map["8000"] == "control")
+    assert(self.codec.address_map["1200"] == "imu")
+
+  def test_mapped_root_path_from_address(self):
+    expected = "protocol"
+    result = self.codec.path_from_address("0000")
+    assert(expected == result)
+
+  def test_mapped_root_struct_from_address(self):
+    expected = self.codec.protocol["data"]["protocol"]
+    result = self.codec.struct_from_address("0000")
+    assert(expected == result)
+
+  def test_mapped_path_from_address(self):
+    expected = "protocol/version"
+    result = self.codec.path_from_address("0001")
+    assert(expected == result)
+
+  def test_mapped_complex_path_from_address(self):
+    expected = "control/manual/speed"
+    result = self.codec.path_from_address("8004")
+    assert(expected == result)
+
+  def test_no_path(self):
+    expected = ""
+    result = self.codec.path_from_address("9000")
+    assert(expected == result)
+  
+  def test_invalid_path(self):
+    expected = ""
+    result = self.codec.path_from_address("invalid")
+    assert(expected == result)
 
 class TestGetPacketEncode():
 
@@ -165,11 +257,17 @@ class TestGetPacketDecode():
     assert(result.category == expected.category)
     assert(result.path == expected.path)
   
-  # def test_nested_decoding(self):
-  #   expected = commsCodec.Packet("get", "protocol/version/patch")
-  #   result = self.codec.decode("G0004\n")
-  #   assert(result.category == expected.category)
-  #   assert(result.path == expected.path)
+  def test_nested_decoding(self):
+    expected = commsCodec.Packet("get", "protocol/version/patch")
+    result = self.codec.decode("G0004\n")
+    assert(result.category == expected.category)
+    assert(result.path == expected.path)
+
+  def test_deep_nest_decoding(self):
+    expected = commsCodec.Packet("get", "control/pid/setpoint/value")
+    result = self.codec.decode("G800e\n")
+    assert(result.category == expected.category)
+    assert(result.path == expected.path)
 
 class TestSetPacketEncodeMultiple():
   def setup_method(self):

@@ -33,20 +33,20 @@
       }
     },
     "typecheck": { "_addr": "2000",
-      "string": { "type": "string", "set": true },
-      "boolean": { "type": "bool", "set": true },
-      "uint8": { "type": "u8", "set": true },
-      "uint16": { "type": "u16", "set": true },
-      "uint32": { "type": "u32", "set": true },
-      "uint64": { "type": "u64", "set": true },
-      "int8": { "type": "i8", "set": true },
-      "int16": { "type": "i16", "set": true },
-      "int32": { "type": "i32", "set": true },
-      "int64": { "type": "i64", "set": true },
-      "float": { "type": "float", "set": true },
-      "double": { "type": "double", "set": true }
+      "string":   { "type": "string", "set": true },
+      "boolean":  { "type": "bool", "set": true },
+      "uint8":    { "type": "u8", "set": true },
+      "uint16":   { "type": "u16", "set": true },
+      "uint32":   { "type": "u32", "set": true },
+      "uint64":   { "type": "u64", "set": true },
+      "int8":     { "type": "i8", "set": true },
+      "int16":    { "type": "i16", "set": true },
+      "int32":    { "type": "i32", "set": true },
+      "int64":    { "type": "i64", "set": true },
+      "float":    { "type": "float", "set": true },
+      "double":   { "type": "double", "set": true }
     },
-    "control": { "addr": "8000",
+    "control": { "_addr": "8000",
       "disable": { "type": "bool", "set": true },
       "manual": { 
         "direction": { "type": "enum", "set": true, "enum": ["FW", "BW", "LT", "RT"] },
@@ -60,11 +60,11 @@
         "gains": {
           "kp": { "type": "float", "set": true },
           "ki": { "type": "float", "set": true },
-          "kd": { "type": "float", "set": true },
-          "setpoint": { 
-            "value": {"type": "float", "set": true },
-            "profile": { "type": "enum", "set": true, "enum": ["flat", "square", "triangle"]}
-          }
+          "kd": { "type": "float", "set": true }
+        },
+        "setpoint": { 
+          "value": {"type": "float", "set": true },
+          "profile": { "type": "enum", "set": true, "enum": ["flat", "square", "triangle"]}
         }
       }
     },

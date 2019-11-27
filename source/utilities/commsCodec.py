@@ -44,6 +44,26 @@ def count_to_path(root, path):
 
   return count
 
+def path_from_count(root, count):
+  path = [""]
+  if count <= 0:
+    return ([], 0)
+  else:
+    for key in root.keys():
+      if key[0] != "_":
+        count -= 1
+        path[0] = key
+        if "type" not in root[key]:
+          (npath, count) = path_from_count(root[key], count)
+          path = path + npath
+
+        if count == 0:
+          break
+    else:
+      # did not count to 0, return an empty path
+      path = []
+  return (path, count)
+
 def get_struct(root, path):
   if path == []:
     return root
@@ -110,6 +130,7 @@ class Codec():
   def __init__(self, protocol_file_path):
     with open(protocol_file_path, "r") as protocol_file:
       self.protocol = json.load(protocol_file)
+    self._generate_address_map()
 
   def encode(self, packet):
     encoded = self.protocol["category"][packet.category]
@@ -144,7 +165,46 @@ class Codec():
       payload = []
     if start == "G":
       category = "get"
-    if addr == "0000":
-      path = "protocol"
+    path = self.path_from_address(addr)
     return Packet(category, path, payload)
+
+  def path_from_address(self, address):
+    try:
+      int(address, 16)
+    except:
+      return ""
+
+    keys = self.address_map.keys()
+    for i, key in enumerate(keys):
+      if i + 1 == len(keys):
+        next_key = str(max(int(address, 16), int(key, 16)))
+      else:
+        next_key = list(keys)[i + 1]
+
+      if clamp(int(address, 16), int(key, 16), int(next_key, 16)) == int(address, 16):
+        diff = int(address, 16) - int(key, 16)
+        (path, count) = path_from_count(
+          self.protocol["data"][self.address_map[key]], 
+          diff
+        )
+        if (count == 0):
+          return "/".join([self.address_map[key]] + path)
+        else:
+          return ""
+
+    return ""
+
+  def struct_from_address(self, address):
+    path = self.path_from_address(address)
+    struct = self.protocol["data"]
+    return struct[path]
+
+  def _generate_address_map(self):
+    self.address_map = {}
+    for key in self.protocol["data"].keys():
+      if key[0] != "_":
+        if "_addr" in self.protocol["data"][key]:
+          self.address_map[self.protocol["data"][key]["_addr"]] = key
+    # Sort the map
+    self.address_map = dict(sorted(self.address_map.items()))
 
