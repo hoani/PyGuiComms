@@ -117,7 +117,7 @@ class TestCountToPath():
     result = commsCodec.count_to_path(self.root, ["NZ", "Christchurch"])
     assert(result == expected)
 
-class TestCountToPath():
+class TestPathFromCount():
   def setup_method(self):
     self.root = { "_addr": "0000",
       "NZ": {
