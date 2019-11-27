@@ -450,7 +450,7 @@ class TestSetPacketEncodeSingle():
     expected = ("S2007:11\n").encode('utf-8')
     packet = commsCodec.Packet("set", "typecheck/int8", tuple([0x11]))
     result = self.codec.encode(packet)
-    assert(result == expected)
+    assert(result == expected)  
 
   def test_negative_i8(self):
     expected = ("S2007:ef\n").encode('utf-8')
@@ -458,6 +458,18 @@ class TestSetPacketEncodeSingle():
     result = self.codec.encode(packet)
     assert(result == expected)
 
+  def test_overflow_i8(self):
+    expected = ("S2007:7f\n").encode('utf-8')
+    packet = commsCodec.Packet("set", "typecheck/int8", tuple([0x1FF]))
+    result = self.codec.encode(packet)
+    assert(result == expected)
+
+  def test_underflow_i8(self):
+    expected = ("S2007:80\n").encode('utf-8')
+    packet = commsCodec.Packet("set", "typecheck/int8", tuple([-0x1FF]))
+    result = self.codec.encode(packet)
+    assert(result == expected)
+  
   def test_simple_i16(self):
     expected = ("S2008:0234\n").encode('utf-8')
     packet = commsCodec.Packet("set", "typecheck/int16", tuple([0x0234]))
@@ -467,6 +479,18 @@ class TestSetPacketEncodeSingle():
   def test_signed_i16(self):
     expected = ("S2008:fdcc\n").encode('utf-8')
     packet = commsCodec.Packet("set", "typecheck/int16", tuple([-0x0234]))
+    result = self.codec.encode(packet)
+    assert(result == expected)
+
+  def test_overflow_i16(self):
+    expected = ("S2008:7fff\n").encode('utf-8')
+    packet = commsCodec.Packet("set", "typecheck/int16", tuple([0x1ffff]))
+    result = self.codec.encode(packet)
+    assert(result == expected)
+
+  def test_underflow_i16(self):
+    expected = ("S2008:8000\n").encode('utf-8')
+    packet = commsCodec.Packet("set", "typecheck/int16", tuple([-0x1FF00]))
     result = self.codec.encode(packet)
     assert(result == expected)
 
@@ -482,6 +506,18 @@ class TestSetPacketEncodeSingle():
     result = self.codec.encode(packet)
     assert(result == expected)
 
+  def test_overflow_i32(self):
+    expected = ("S2009:7fffffff\n").encode('utf-8')
+    packet = commsCodec.Packet("set", "typecheck/int32", tuple([0x1fffffffff]))
+    result = self.codec.encode(packet)
+    assert(result == expected)
+
+  def test_underflow_i32(self):
+    expected = ("S2009:80000000\n").encode('utf-8')
+    packet = commsCodec.Packet("set", "typecheck/int32", tuple([-0x1FF0000000]))
+    result = self.codec.encode(packet)
+    assert(result == expected)
+
   def test_simple_i64(self):
     expected = ("S200a:0010223400000078\n").encode('utf-8')
     packet = commsCodec.Packet("set", "typecheck/int64", tuple([0x10223400000078]))
@@ -491,6 +527,18 @@ class TestSetPacketEncodeSingle():
   def test_signed_i64(self):
     expected = ("S200a:ffefddcbffffff88\n").encode('utf-8')
     packet = commsCodec.Packet("set", "typecheck/int64", tuple([-0x10223400000078]))
+    result = self.codec.encode(packet)
+    assert(result == expected)
+
+  def test_overflow_i64(self):
+    expected = ("S200a:7fffffffffffffff\n").encode('utf-8')
+    packet = commsCodec.Packet("set", "typecheck/int64", tuple([0x1ffffffffffffffff0]))
+    result = self.codec.encode(packet)
+    assert(result == expected)
+
+  def test_underflow_i64(self):
+    expected = ("S200a:8000000000000000\n").encode('utf-8')
+    packet = commsCodec.Packet("set", "typecheck/int64", tuple([-0x1FF000000000000000]))
     result = self.codec.encode(packet)
     assert(result == expected)
 

@@ -102,12 +102,16 @@ def encode_types(item, typeof):
   elif typeof == "u64":
     return "{:016x}".format(clamp(item, 0x0000000000000000, 0xffffffffffffffff))
   if typeof == "i8":
+    item = clamp(item, -0x80, 0x7F)
     return "{:02x}".format(item + 0x100 if item < 0 else item)
   elif typeof == "i16":
+    item = clamp(item, -0x8000, 0x7FFF)
     return "{:04x}".format(item + 0x10000 if item < 0 else item)
   elif typeof == "i32":
+    item = clamp(item, -0x80000000, 0x7FFFFFFF)
     return "{:08x}".format(item + 0x100000000 if item < 0 else item)
   elif typeof == "i64":
+    item = clamp(item, -0x8000000000000000, 0x7FFFFFFFFFFFFFFF)
     return "{:016x}".format(item + 0x10000000000000000 if item < 0 else item)
   elif typeof == "string":
     return item
@@ -120,11 +124,11 @@ def encode_types(item, typeof):
   else:
     return ""
 
-def decode_unsigned(item, min_value, max_value):
+def decode_unsigned(item, bits):
   try:
-    return clamp(int(item, 16), min_value, max_value)
+    return clamp(int(item, 16), 0, (0x1 << bits) - 1)
   except:
-    return min_value
+    return 0
 
 def decode_signed(item, bits):
   try:
@@ -136,17 +140,17 @@ def decode_signed(item, bits):
 
     return clamp(value, -min_value, min_value -1)
   except:
-    return min_value
+    return 0
 
 def decode_types(item, typeof):
   if typeof == "u8":
-    return decode_unsigned(item, 0x00, 0xff)
+    return decode_unsigned(item, 8)
   elif typeof == "u16":
-    return decode_unsigned(item, 0x0000, 0xffff)
+    return decode_unsigned(item, 16)
   elif typeof == "u32":
-    return decode_unsigned(item, 0x00000000, 0xffffffff)
+    return decode_unsigned(item, 32)
   elif typeof == "u64":
-    return decode_unsigned(item, 0x0000000000000000, 0xffffffffffffffff)
+    return decode_unsigned(item, 64)
   if typeof == "i8":
     return decode_signed(item, 8)
   elif typeof == "i16":
