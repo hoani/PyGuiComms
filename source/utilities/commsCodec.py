@@ -89,21 +89,29 @@ def extract_types(root, path):
 
   return types
 
-def extract_paths(root, path):
+def extract_path_settable_pairs(root, path):
   start = get_struct(root, path)
   paths = []
+  settables = []
   if start != None:
     if "type" in start.keys():
-      return []
+      if "set" in start.keys():
+        return ([""], [start["set"]])
+      else:
+        return ([], [])
     else:
       for key in start.keys():
         if key[0] != "_":
-          paths.append(key)
-          deep_paths = extract_paths(start[key], [])
-          if deep_paths != []:
-            paths.append(deep_paths)
+          (deep_paths, deep_settables) = extract_path_settable_pairs(start[key], [])
+          if deep_paths == [""]:
+            paths.append(key)
+            settables += deep_settables
+          else:
+            for (deep_path, deep_settable) in tuple(zip(deep_paths, deep_settables)):
+              paths.append("/".join([key, deep_path]))
+              settables.append(deep_settable)
 
-  return paths
+  return (paths, settables)
 
 def clamp(value, min_value, max_value):
   return max(min_value, min(value, max_value))
@@ -149,7 +157,6 @@ def decode_unsigned(item, bits):
 def decode_signed(item, bits):
   try:
     value = int(item, 16)
-    print(value)
     min_value = 0x1 << (bits - 1)
     if value > min_value:
       value -= 0x1 << (bits)
@@ -248,14 +255,13 @@ class Codec():
 
   def unpack(self, packet):
     result = {}
-    paths = extract_paths(self.protocol["data"], packet.path.split("/"))
-    if len(paths) == 0 and len(packet.payload) == 1:
-      result[packet.path] = {"value": packet.payload[0], "set": False}
+    (paths, settables) = extract_path_settable_pairs(self.protocol["data"], packet.path.split("/"))
+    if paths == [""] and len(packet.payload) == 1:
+      result[packet.path] = {"value": packet.payload[0], "set": settables[0]}
     else: 
-      for (path_end, value) in tuple(zip(paths, packet.payload)):
+      for (path_end, settable, value) in tuple(zip(paths, settables, packet.payload)):
         path = "/".join([packet.path] + [path_end])
-        result[path] = {"value": value, "set": False} 
-        print(result)
+        result[path] = {"value": value, "set": settable}
     return result
 
   def category_from_start(self, start):
