@@ -249,8 +249,8 @@ class TestGetSettableFromPath():
     result = self.codec.is_settable("imu/accel")
     assert(result == expected)
 
-  # def test_invalid_address(self):
-  #   expected = False
-  #   result = self.codec.is_settable("imu/invalid/invalid")
-  #   assert(result == expected)
+  def test_invalid_address(self):
+    expected = False
+    result = self.codec.is_settable("imu/invalid/invalid")
+    assert(result == expected)
 
