@@ -228,6 +228,27 @@ class TestFromAddress():
     result = self.codec.path_from_address("invalid")
     assert(expected == result)
 
+class TestPacketPayloadUnpack():
+  def setup_method(self):
+    protocol_file_path = "test/fakes/protocol.json"
+    self.codec = commsCodec.Codec(protocol_file_path)
+
+  def test_unpack_simple(self):
+    expected = {"protocol/version/major": {"value": 5, "set": False}}
+    packet = commsCodec.Packet("pub", "protocol/version/major", 5)
+    result = self.codec.unpack(packet)
+    assert(result == expected)
+
+  def test_unpack_multiple(self):
+    expected = {
+      "protocol/version/major": {"value": 5, "set": False},
+      "protocol/version/minor": {"value": 4, "set": False},
+      "protocol/version/patch": {"value": 3, "set": False},
+    }
+    packet = commsCodec.Packet("pub", "protocol/version", (5, 4, 3))
+    result = self.codec.unpack(packet)
+    assert(result == expected)
+
 class TestGetPacketEncode():
 
   def setup_method(self):

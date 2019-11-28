@@ -89,6 +89,22 @@ def extract_types(root, path):
 
   return types
 
+def extract_paths(root, path):
+  start = get_struct(root, path)
+  paths = []
+  if start != None:
+    if "type" in start.keys():
+      return []
+    else:
+      for key in start.keys():
+        if key[0] != "_":
+          paths.append(key)
+          deep_paths = extract_paths(start[key], [])
+          if deep_paths != []:
+            paths.append(deep_paths)
+
+  return paths
+
 def clamp(value, min_value, max_value):
   return max(min_value, min(value, max_value))
   
@@ -176,7 +192,10 @@ class Packet():
   def __init__(self, category, path=None, payload=None):
     self.category = category
     self.path = path
-    self.payload = payload
+    if isinstance(payload, tuple) == False and payload != None:
+      self.payload = tuple([payload])
+    else:
+      self.payload = payload
 
 class Codec():
   def __init__(self, protocol_file_path):
@@ -226,6 +245,18 @@ class Codec():
       payload = None
     
     return Packet(category, path, payload)
+
+  def unpack(self, packet):
+    result = {}
+    paths = extract_paths(self.protocol["data"], packet.path.split("/"))
+    if len(paths) == 0 and len(packet.payload) == 1:
+      result[packet.path] = {"value": packet.payload[0], "set": False}
+    else: 
+      for (path_end, value) in tuple(zip(paths, packet.payload)):
+        path = "/".join([packet.path] + [path_end])
+        result[path] = {"value": value, "set": False} 
+        print(result)
+    return result
 
   def category_from_start(self, start):
     if start in self.category_map.keys():
