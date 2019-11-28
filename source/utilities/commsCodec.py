@@ -301,6 +301,18 @@ class Codec():
     struct = self.protocol["data"]
     return struct[path]
 
+  def is_settable(self, address):
+    struct = get_struct(self.protocol["data"], address.split("/"))
+    if struct == None:
+      # Cannot set something not part of the protocol
+      return False
+    else:
+      if "set" in struct:
+        return struct["set"]
+      else:
+        # An incomplete address may or may not be settable
+        return None
+
   def _generate_address_map(self):
     self.address_map = {}
     for key in self.protocol["data"].keys():
