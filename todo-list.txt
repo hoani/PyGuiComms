@@ -1,9 +1,5 @@
 [] Big Project - Protocol config
-[] Break up test_CommsCodec into:
-  - test_CommsCodec_decode
-  - test_CommsCodec_encode
-  - test_CommsCodec_unpack
-  - test_CommsCodec_helpers
+[] Add helper - get settable from path
 [] Create CommsCodec repo - and migrate
 [] Come up with a name for the protocol
 [] Allow multi packets in a single packet string (eg. "P0800:44:33|P9000:12:6543\n")
