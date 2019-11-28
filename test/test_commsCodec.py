@@ -790,3 +790,18 @@ class TestSetPacketDecodeSingle():
     assert(result.path == expected.path)
     assert(abs(result.payload[0] - expected.payload[0]) < 0.0000001 )
 
+# class TestGetSettableFromPath():
+#   def setup_method(self):
+#     protocol_file_path = "test/fakes/protocol.json"
+#     self.codec = commsCodec.Codec(protocol_file_path)
+
+#   def test_is_settable(self):
+#     expected = True
+#     result = self.codec.is_settable("typecheck/string")
+#     assert(result == expected)
+
+#   def test_not_settable(self):
+#     expected = False
+#     result = self.codec.is_settable("imu/accel/y")
+#     assert(result == expected)
+
