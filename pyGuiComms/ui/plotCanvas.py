@@ -7,7 +7,7 @@ import numpy as np
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 import matplotlib
 import matplotlib.pyplot as pyplot
-from source.utilities import vect
+from pyGuiComms.utilities import vect
 
 
 

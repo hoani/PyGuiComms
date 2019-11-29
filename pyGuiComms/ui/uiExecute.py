@@ -14,17 +14,17 @@ class UiExecute:
     args = cli.get_args(settings["default"])
   
     if args.no_connect == True:
-      from source.sockets import socketFake
+      from pyGuiComms.sockets import socketFake
       ClientSocket = socketFake.SocketFake
       serverAddress = ''
       port = 0
     elif args.tcp != None:
-      from source.sockets import socketTcp
+      from pyGuiComms.sockets import socketTcp
       ClientSocket = socketTcp.SocketTcp
       serverAddress = args.tcp[0]
       port = int(args.tcp[1])
     else:
-      from source.sockets import socketBt
+      from pyGuiComms.sockets import socketBt
       ClientSocket = socketBt.SocketBt
       serverAddress = args.bluetooth[0]
       port = args.bluetooth[1]
