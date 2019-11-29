@@ -1,5 +1,5 @@
 from PySide2 import QtWidgets, QtGui
-from source.ui import extraConsole
+from pyGuiComms.ui import extraConsole
 import sys, os
 
 class Ui:

@@ -8,7 +8,7 @@
 # Eventually a translation object will subscribe to comms client and will take application subscribers.
 
 import sys, os
-from source.utilities import vect
+from pyGuiComms.utilities import vect
 import queue
 
 class CommsClient():

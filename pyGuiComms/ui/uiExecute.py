@@ -1,9 +1,9 @@
 import sys, io
 from PySide2.QtWidgets import QApplication
 import queue
-from source.utilities import cli, logger
-from source.ui import uiBase, uiImu, uiControl, uiDebug
-from source.comms import commsClient
+from pyGuiComms.utilities import cli, logger
+from pyGuiComms.ui import uiBase, uiImu, uiControl, uiDebug
+from pyGuiComms.comms import commsClient
 import json
 
 class UiExecute:

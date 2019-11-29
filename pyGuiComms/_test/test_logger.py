@@ -1,5 +1,5 @@
-from source.utilities import logger
-from test.fakes import fakeFile
+from pyGuiComms.utilities import logger
+from pyGuiComms._test.fakes import fakeFile
 
 intValue = 0
 floatValue = 3.14

@@ -9,8 +9,8 @@
 
 from PySide2 import QtWidgets
 import sys, os
-from source.utilities import vect
-from source.ui import plotCanvas
+from pyGuiComms.utilities import vect
+from pyGuiComms.ui import plotCanvas
 
 class Ui():
   def __init__(self, main_window):

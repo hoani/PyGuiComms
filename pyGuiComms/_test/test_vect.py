@@ -1,4 +1,4 @@
-from source.utilities import vect
+from pyGuiComms.utilities import vect
 
 class TestVectBasic:
 
