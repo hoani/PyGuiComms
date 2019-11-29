@@ -1,5 +1,4 @@
 [] Big Project - Gui Launcher As Proxy
-[] Subtree RoBus into pyGuiComms
 [] Separate logger from ui elements
 [] Integrate infrared sensor
 [] Add power status UI
