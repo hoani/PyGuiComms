@@ -1,3 +1,4 @@
+[] Big Project - JSON config for connecting signals to GUI
 [] Big Project - Gui Launcher As Proxy
 [] Separate logger from ui elements
 [] Integrate infrared sensor
