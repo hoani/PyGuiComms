@@ -52,10 +52,10 @@ class Ui():
       self.manual_upkeep()
 
   def _control_disable(self):
-    self.main_window.command_queue_place(('disable'))
+    self.main_window.command_queue_place('control/disable', ())
 
   def _control_auto(self):
-    self.main_window.command_queue_place(('auto'))
+    self.main_window.command_queue_place('control/automatic', (0.5))
 
   def _manual_speed(self):
     self.manual_speed = self.slider_manual_speed.value()/100.0
@@ -73,7 +73,7 @@ class Ui():
     self._control_manual_cmd("RT")
 
   def _control_manual_cmd(self, dir):
-    self.main_window.command_queue_place(('manual', dir, self.manual_speed))
+    self.main_window.command_queue_place('control/manual', (dir, self.manual_speed))
 
   def _control_manual_forward_pressed(self):
     self.manual_upkeep = self._control_manual_forward

@@ -54,8 +54,8 @@ class MainWindow(QtWidgets.QMainWindow):
   def set_command_queue(self, queue):
     self.command_queue = queue
 
-  def command_queue_place(self, item):
-    self.command_queue.put(item)
+  def command_queue_place(self, path, payload):
+    self.command_queue.put((path, payload))
 
   def load_ui_elements(self, ui_element_list, comms, log_entries):
     if log_entries != None:

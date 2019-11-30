@@ -37,7 +37,6 @@ class CommsClient():
       try:
         data = self.client.recv(1024)
         if data != None:
-          print(data.decode('utf-8'))
           self._process_packet(data)
         else:
           self.client.connected = False
@@ -52,29 +51,12 @@ class CommsClient():
 
       while True:
         try:
-          command = self.command_queue.get_nowait()
-          if command == " " or command == (""):
-            raise Exception("WTF?!")
+          path, payload = self.command_queue.get_nowait()
 
-          if command == None or command == False:
-            break
-          if isinstance(command, list) == False:
-            if isinstance(command, str):
-              command = [command]
-            else:
-              command = list(command)
-
-          for idx, item in enumerate(command):
-            if isinstance(item, str):
-              continue
-            elif isinstance(item, float):
-              command[idx] = "{:0.2f}".format(item)
-            else:
-              command[idx] = str(item)
-          # Opportunity for improvement - verification of commands
-          payload = " ".join(command) + "\n"
-          payload = payload.encode('utf-8')
-          self.client.send(payload)
+          p = packet.Packet("set", path, payload)
+          encoded = self.codec.encode(p)
+          if encoded != '':
+            self.client.send(encoded)
           
         except queue.Empty:
           break
@@ -96,10 +78,16 @@ class CommsClient():
     else:
       self.subscribers[item] = [callback]
 
-  def _publish(self, item, payload):
-    if item in self.subscribers.keys():
-      for callback in self.subscribers[item]:
-        callback(payload)
+  def _publish(self, unpacked):
+    for subscription in self.subscribers.keys():
+      data = []
+      for item in unpacked.keys():
+        if subscription in item:
+          data.append(unpacked[item]["value"])
+
+      if len(data) > 0:
+        for callback in self.subscribers[subscription]:
+          callback(data)
 
   def _process_packet(self, data):
     print(data, self.remainder)
@@ -109,20 +97,4 @@ class CommsClient():
     for p in packets:
       if p.category == "pub":
         unpacked = p.unpack(self.codec)
-        for key in unpacked.keys():
-          value = unpacked[key]["value"]
-          print("received:", key, value)
-          self._publish(key, value)
-
-    # data = data.decode('utf-8')
-    # for line in data.split('\n'):
-    #   items = line.split(' ')
-
-    #   if items[0] == "accel" or items[0] == "gyros" or items[0] == "magne":
-    #     if len(items) == 4:
-    #       accel_data = vect.Vec3(
-    #         float(items[1]),
-    #         float(items[2]),
-    #         float(items[3])
-    #       )
-    #       self._publish(items[0], accel_data)
+        self._publish(unpacked)

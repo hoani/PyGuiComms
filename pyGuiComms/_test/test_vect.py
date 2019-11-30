@@ -12,3 +12,9 @@ class TestVectBasic:
     assert(self.vect.y == 0)
     assert(self.vect.z == 789)
 
+  def test_array_init(self):
+    self.vect = vect.Vec3([-123, 0, 789]) 
+    assert(self.vect.x == -123)
+    assert(self.vect.y == 0)
+    assert(self.vect.z == 789)
+

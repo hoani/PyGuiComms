@@ -7,3 +7,5 @@
 [] Add Proxy
 [] Add file headers and descriptions
 [] Integrate webcam
+[] Handle disconnects from host better (tcp)
+[] Handle disconnects from host better (bt)
