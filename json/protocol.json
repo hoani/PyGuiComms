@@ -1,29 +1,28 @@
-
 {
   "version": {
     "major": 1,
     "minor": 0,
     "patch": 0
   },
-  "start": {
-    "get": { "encode": "G" },
-    "set": { "encode": "S" },
-    "ack": { "encode": "A" },
-    "nak": { "encode": "N" }, 
-    "sub": { "encode": "B" },
-    "pub": { "encode": "P" }
+  "category": {
+    "get": "G",
+    "set": "S",
+    "ack": "A",
+    "nak": "N", 
+    "sub": "B",
+    "pub": "P"
   },
-  "end": {
-    "encode": "\n"
-  },
+  "separator": ":",
+  "compound": "|",
+  "end": "\n",
   "data": {
     "protocol": { "_addr": "0000", 
-      "name": { "type": "u8", "set": false },
       "version": {
         "major": { "type": "u8", "set": false },
         "minor": { "type": "u8", "set": false },
         "patch": { "type": "u16", "set": false }
-      }
+      },
+      "name": { "type": "string", "set": false }
     },
     "ping": { "_addr": "1000", "size": 1, "type":  "bool", "set": false },
     "health": { "_addr": "1100",
@@ -34,7 +33,7 @@
         "cpuse": { "type": "float", "set": false }
       }
     },
-    "control": { "addr": "8000",
+    "control": { "_addr": "8000",
       "disable": { "type": "bool", "set": true },
       "manual": { 
         "direction": { "type": "enum", "set": true, "enum": ["FW", "BW", "LT", "RT"] },
@@ -48,11 +47,11 @@
         "gains": {
           "kp": { "type": "float", "set": true },
           "ki": { "type": "float", "set": true },
-          "kd": { "type": "float", "set": true },
-          "setpoint": { 
-            "value": {"type": "float", "set": true },
-            "profile": { "type": "enum", "set": true, "enum": ["flat", "square", "triangle"]}
-          }
+          "kd": { "type": "float", "set": true }
+        },
+        "setpoint": { 
+          "value": {"type": "float", "set": true },
+          "profile": { "type": "enum", "set": true, "enum": ["flat", "square", "triangle"]}
         }
       }
     },

@@ -10,6 +10,7 @@
 import sys, os
 from pyGuiComms.utilities import vect
 import queue
+from external.RoBus.RoBus import codec, packet
 
 class CommsClient():
   def __init__(self, client = None, my_queue = queue.Queue()):
@@ -17,6 +18,8 @@ class CommsClient():
     self.client_connecting = False
     self.subscribers = dict()
     self.command_queue = my_queue
+    self.remainder = b""
+    self.codec = codec.Codec("json/protocol.json")
 
   def upkeep(self):
     if self.client == None:
@@ -99,15 +102,27 @@ class CommsClient():
         callback(payload)
 
   def _process_packet(self, data):
-    data = data.decode('utf-8')
-    for line in data.split('\n'):
-      items = line.split(' ')
+    print(data, self.remainder)
+    data = self.remainder + data
+    
+    (self.remainder, packets) = self.codec.decode(data)
+    for p in packets:
+      if p.category == "pub":
+        unpacked = p.unpack(self.codec)
+        for key in unpacked.keys():
+          value = unpacked[key]["value"]
+          print("received:", key, value)
+          self._publish(key, value)
 
-      if items[0] == "accel" or items[0] == "gyros" or items[0] == "magne":
-        if len(items) == 4:
-          accel_data = vect.Vec3(
-            float(items[1]),
-            float(items[2]),
-            float(items[3])
-          )
-          self._publish(items[0], accel_data)
+    # data = data.decode('utf-8')
+    # for line in data.split('\n'):
+    #   items = line.split(' ')
+
+    #   if items[0] == "accel" or items[0] == "gyros" or items[0] == "magne":
+    #     if len(items) == 4:
+    #       accel_data = vect.Vec3(
+    #         float(items[1]),
+    #         float(items[2]),
+    #         float(items[3])
+    #       )
+    #       self._publish(items[0], accel_data)
