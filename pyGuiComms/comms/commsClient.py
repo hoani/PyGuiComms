@@ -13,13 +13,13 @@ import queue
 from external.RoBus.RoBus import codec, packet
 
 class CommsClient():
-  def __init__(self, client = None, my_queue = queue.Queue()):
+  def __init__(self, protocol_file_path, client = None, my_queue = queue.Queue()):
     self.client = client
     self.client_connecting = False
     self.subscribers = dict()
     self.command_queue = my_queue
     self.remainder = b""
-    self.codec = codec.Codec("json/protocol.json")
+    self.codec = codec.Codec(protocol_file_path)
 
   def upkeep(self):
     if self.client == None:

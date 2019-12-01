@@ -8,7 +8,7 @@ import json
 
 
 class UiExecute:
-  def __init__(self, ui_file_path, settings_file_path, widgets_file_path):
+  def __init__(self, ui_file_path, settings_file_path, widgets_file_path, protocol_file_path):
     with open(settings_file_path, "r") as settings_file:
       settings = json.load(settings_file)
     
@@ -47,7 +47,7 @@ class UiExecute:
 
     command_queue = queue.Queue()
     client_socket = ClientSocket(serverAddress, port)
-    comms = commsClient.CommsClient(client_socket, command_queue)
+    comms = commsClient.CommsClient(protocol_file_path, client_socket, command_queue)
     window.add_upkeep(20, comms.upkeep)
     window.set_command_queue(command_queue)
 
