@@ -575,7 +575,7 @@
        </layout>
       </item>
       <item>
-       <layout class="QVBoxLayout" name="plotLayout">
+       <layout class="QVBoxLayout" name="VBox_Imu">
        </layout>
       </item>
      </layout>

@@ -1,15 +1,16 @@
 {
+  "QPushButton": false,
   "QLineEdit": {
-    "labelCpuUsage": { 
+    "LineEdit_CpuUse": { 
       "input": false,
       "subscriptions": { 
-        "cpuse": { "callback": "set", "config": ["{:0.3f}"]} 
+        "health/os/cpuse": { "callback": "set", "config": ["{:0.3f}"]} 
       }
     },
-    "labelBatteryVoltage": {
+    "LineEdit_battV": {
       "input": false,
       "subscriptions": { 
-        "battv": { "callback": "set", "config": ["{:0.3f}"]} 
+        "health/batt/v": { "callback": "set", "config": ["{:0.3f}"]} 
       }
     },
     "LineEdit_accelX": {
@@ -68,10 +69,30 @@
     }
   },
   "QVBoxLayout": {
-    "plotCpuUsage":{
-      "lines": ["-r"],
-      "y-bounds": null,
-      "title": "CPU (%)"
+    "VBox_Imu":{
+      "insert": [
+        {
+          "widget": "plotVec3",
+          "settings": { "title": "Accelerometers (m.s-2)" },
+          "subscriptions": {
+            "imu/accel": { "callback": "setVec3", "config": [] }
+          } 
+        },
+        {
+          "widget": "plotVec3",
+          "settings": { "title": "Gyroscopes (deg.s-1)" },
+          "subscriptions": { 
+            "imu/gyros": { "callback": "setVec3", "config": [] }
+          } 
+        },
+        {
+          "widget": "plotVec3",
+          "settings": { "title": "Magnetometers (mT)" },
+          "subscriptions": {
+            "imu/magne": { "callback": "setVec3", "config": [] } 
+          } 
+        }
+      ]
     }   
   }
 }

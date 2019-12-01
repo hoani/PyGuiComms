@@ -1,11 +1,14 @@
 [] Big Project - JSON config for connecting signals to GUI
-[] Big Project - Gui Launcher As Proxy
+    [] Add "QPushButton" methods
+    [] Rename JSON folder to config
+[] Add default config file for default IP addresses etc
+[] Investigate using TOML as a config format
 [] Separate logger from ui elements
+[] Big Project - Gui Launcher As Proxy
 [] Integrate infrared sensor
 [] Add power status UI
 [] Add servo UI
 [] Add Navigation UI
-[] Add Proxy
 [] Add file headers and descriptions
 [] Integrate webcam
 [] Handle disconnects from host better (tcp)
