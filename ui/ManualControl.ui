@@ -275,7 +275,7 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLineEdit" name="acc_x">
+                 <widget class="QLineEdit" name="LineEdit_accelX">
                   <property name="text">
                    <string>acc_x</string>
                   </property>
@@ -306,7 +306,7 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLineEdit" name="acc_y">
+                 <widget class="QLineEdit" name="LineEdit_accelY">
                   <property name="text">
                    <string>acc_y</string>
                   </property>
@@ -337,7 +337,7 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLineEdit" name="acc_z">
+                 <widget class="QLineEdit" name="LineEdit_accelZ">
                   <property name="text">
                    <string>acc_z</string>
                   </property>
@@ -379,7 +379,7 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLineEdit" name="gyro_x">
+                 <widget class="QLineEdit" name="LineEdit_gyrosX">
                   <property name="text">
                    <string>gyro_x</string>
                   </property>
@@ -410,7 +410,7 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLineEdit" name="gyro_y">
+                 <widget class="QLineEdit" name="LineEdit_gyrosY">
                   <property name="text">
                    <string>gyro_y</string>
                   </property>
@@ -441,7 +441,7 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLineEdit" name="gyro_z">
+                 <widget class="QLineEdit" name="LineEdit_gyrosZ">
                   <property name="text">
                    <string>gyro_z</string>
                   </property>
@@ -483,7 +483,7 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLineEdit" name="mag_x">
+                 <widget class="QLineEdit" name="LineEdit_magneX">
                   <property name="text">
                    <string>mag_x</string>
                   </property>
@@ -514,7 +514,7 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLineEdit" name="mag_y">
+                 <widget class="QLineEdit" name="LineEdit_magneY">
                   <property name="text">
                    <string>mag_y</string>
                   </property>
@@ -545,7 +545,7 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLineEdit" name="mag_z">
+                 <widget class="QLineEdit" name="LineEdit_magneZ">
                   <property name="text">
                    <string>mag_z</string>
                   </property>

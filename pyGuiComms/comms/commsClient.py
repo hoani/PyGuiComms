@@ -90,7 +90,6 @@ class CommsClient():
           callback(data)
 
   def _process_packet(self, data):
-    print(data, self.remainder)
     data = self.remainder + data
     
     (self.remainder, packets) = self.codec.decode(data)

@@ -6,11 +6,16 @@ from pyGuiComms.ui import uiBase, uiImu, uiControl, uiDebug
 from pyGuiComms.comms import commsClient
 import json
 
+
 class UiExecute:
   def __init__(self, ui_file_path, settings_file_path, widgets_file_path):
-    setting_file = open(settings_file_path, "r")
-    settings = json.load(setting_file)
-    setting_file.close()
+    with open(settings_file_path, "r") as settings_file:
+      settings = json.load(settings_file)
+    
+    with open(widgets_file_path, "r") as widgets_file:
+      widget_settings = json.load(widgets_file)
+
+    
     args = cli.get_args(settings["default"])
   
     if args.no_connect == True:
@@ -46,7 +51,9 @@ class UiExecute:
     window.add_upkeep(20, comms.upkeep)
     window.set_command_queue(command_queue)
 
-    window.load_ui_elements([uiImu, uiControl, uiDebug], comms, log_entries)
+    window.load_ui_elements([uiImu, uiControl, uiDebug], comms, log_entries, widget_settings)
+
+
 
     if log_entries != None:
       log_file = open(args.data_logging, "w+")

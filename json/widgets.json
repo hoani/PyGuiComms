@@ -2,11 +2,69 @@
   "QLineEdit": {
     "labelCpuUsage": { 
       "input": false,
-      "subscribe": "cpuse"
+      "subscriptions": { 
+        "cpuse": { "callback": "set", "config": ["{:0.3f}"]} 
+      }
     },
     "labelBatteryVoltage": {
       "input": false,
-      "subscribe": "battv"
+      "subscriptions": { 
+        "battv": { "callback": "set", "config": ["{:0.3f}"]} 
+      }
+    },
+    "LineEdit_accelX": {
+      "input": false,
+      "subscriptions": { 
+        "imu/accel/x": { "callback": "set", "config": ["{:0.3f}"]} 
+      }
+    },
+    "LineEdit_accelY": {
+      "input": false,
+      "subscriptions": { 
+        "imu/accel/y": { "callback": "set", "config": ["{:0.3f}"]} 
+      }
+    },
+    "LineEdit_accelZ": {
+      "input": false,
+      "subscriptions": { 
+        "imu/accel/z": { "callback": "set", "config": ["{:0.3f}"]} 
+      }
+    },
+    "LineEdit_gyrosX": {
+      "input": false,
+      "subscriptions": { 
+        "imu/gyros/x": { "callback": "set", "config": ["{:0.3f}"]} 
+      }
+    },
+    "LineEdit_gyrosY": {
+      "input": false,
+      "subscriptions": { 
+        "imu/gyros/y": { "callback": "set", "config": ["{:0.3f}"]} 
+      }
+    },
+    "LineEdit_gyrosZ": {
+      "input": false,
+      "subscriptions": { 
+        "imu/gyros/z": { "callback": "set", "config": ["{:0.3f}"]} 
+      }
+    },
+    "LineEdit_magneX": {
+      "input": false,
+      "subscriptions": { 
+        "imu/magne/x": { "callback": "set", "config": ["{:0.3f}"]} 
+      }
+    },
+    "LineEdit_magneY": {
+      "input": false,
+      "subscriptions": { 
+        "imu/magne/y": { "callback": "set", "config": ["{:0.3f}"]} 
+      }
+    },
+    "LineEdit_magneZ": {
+      "input": false,
+      "subscriptions": { 
+        "imu/magne/z": { "callback": "set", "config": ["{:0.3f}"]} 
+      }
     }
   },
   "QVBoxLayout": {
@@ -14,7 +72,6 @@
       "lines": ["-r"],
       "y-bounds": null,
       "title": "CPU (%)"
-    }
-    
+    }   
   }
 }

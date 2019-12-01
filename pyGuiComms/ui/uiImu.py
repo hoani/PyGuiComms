@@ -20,24 +20,6 @@ class Ui():
     self.plot_layout.addWidget(self.plot_gyro)
     self.plot_layout.addWidget(self.plot_mag)
 
-    self.accelerometer = vect.Vec3(
-      self.main_window.findChild(QtWidgets.QLineEdit, 'acc_x'),
-      self.main_window.findChild(QtWidgets.QLineEdit, 'acc_y'),
-      self.main_window.findChild(QtWidgets.QLineEdit, 'acc_z')
-    )
-
-    self.gyroscope = vect.Vec3(
-      self.main_window.findChild(QtWidgets.QLineEdit, 'gyro_x'),
-      self.main_window.findChild(QtWidgets.QLineEdit, 'gyro_y'),
-      self.main_window.findChild(QtWidgets.QLineEdit, 'gyro_z')
-    )
-
-    self.magnetometer = vect.Vec3(
-      self.main_window.findChild(QtWidgets.QLineEdit, 'mag_x'),
-      self.main_window.findChild(QtWidgets.QLineEdit, 'mag_y'),
-      self.main_window.findChild(QtWidgets.QLineEdit, 'mag_z')
-    )
-
     self.accelerometer_data = vect.Vec3(0,0,0)
     self.gyroscope_data = vect.Vec3(0,0,0)
     self.magnetometer_data = vect.Vec3(0,0,0)
@@ -61,27 +43,18 @@ class Ui():
   def _data_update_accelerometer(self, data):
     t = datetime.datetime.now().timestamp() - self.t_start
     data = vect.Vec3(data)
-    self.main_window.update_text_field(self.accelerometer.x, data.x)
-    self.main_window.update_text_field(self.accelerometer.y, data.y)
-    self.main_window.update_text_field(self.accelerometer.z, data.z)
     self.main_window.update_plot_vec3(self.plot_accel, t, data)
     self.accelerometer_data = data
 
   def _data_update_gyroscope(self, data):
     t = datetime.datetime.now().timestamp() - self.t_start
     data = vect.Vec3(data)
-    self.main_window.update_text_field(self.gyroscope.x, data.x)
-    self.main_window.update_text_field(self.gyroscope.y, data.y)
-    self.main_window.update_text_field(self.gyroscope.z, data.z)
     self.main_window.update_plot_vec3(self.plot_gyro, t, data)
     self.gyroscope_data = data
 
   def _data_update_magnetometer(self, data):
     t = datetime.datetime.now().timestamp() - self.t_start
     data = vect.Vec3(data)
-    self.main_window.update_text_field(self.magnetometer.x, data.x)
-    self.main_window.update_text_field(self.magnetometer.y, data.y)
-    self.main_window.update_text_field(self.magnetometer.z, data.z)
     self.main_window.update_plot_vec3(self.plot_mag, t, data)
     self.magnetometer_data = data
 
