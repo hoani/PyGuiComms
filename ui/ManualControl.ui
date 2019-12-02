@@ -113,7 +113,7 @@
                      </layout>
                     </item>
                     <item>
-                     <widget class="QSlider" name="manualSpeed">
+                     <widget class="QSlider" name="Slider_manualSpeed">
                       <property name="maximum">
                        <number>100</number>
                       </property>

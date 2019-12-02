@@ -51,7 +51,8 @@
     "PushButton_controlManualRT": {
       "signals": {
         "pressed": { 
-          "action" : "set", 
+          "action" : "set",
+          "repeat": { "rate": 0.5, "cancel": "released" }, 
           "path": "control/manual", 
           "args": [
             "RT",
@@ -80,6 +81,16 @@
         }
       }
     }    
+  },
+  "QSlider": {
+    "Slider_manualSpeed": {
+      "signals": {
+        "released": [
+          { "action" : "map", "path":    "control/manual/speed", "mulitplier": 0.01 },
+          { "action" : "map", "path": "control/automatic/speed", "multiplier": 0.01 }
+        ]
+      }
+    }
   },
   "QLineEdit": {
     "LineEdit_CpuUse": { 

@@ -1,6 +1,6 @@
 [] Big Project - JSON config for connecting signals to GUI
-    [] Add "QPushButton" methods
-    [] Rename JSON folder to config
+    [] Add data map to GUI
+    [] Add continuous holding functionality
     [] Tidy up of all UI elements - delete specific elements
     [] Add power status UI
 [] Add default config file for default IP addresses etc

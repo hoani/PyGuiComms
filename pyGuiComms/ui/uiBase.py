@@ -177,15 +177,27 @@ class MainWindow(QtWidgets.QMainWindow):
         )
 
     if "signals" in fields:
-      for signal in fields["signals"]:
-        self._register_signal(
-          typeof,
-          widget,
-          signal,
-          fields["signals"][signal]
-        )
+      for signal in fields["signals"].keys():
+        if isinstance(fields["signals"][signal], list):
+          for item in fields["signals"][signal]:
+            self._register_signal(
+              typeof,
+              widget,
+              signal,
+              item
+            )
+
+        else:
+          self._register_signal(
+            typeof,
+            widget,
+            signal,
+            fields["signals"][signal]
+          )
 
   def _register_signal(self, typeof, widget, signal, fields):
+    if fields["action"] == "map":
+      return
     callback_factory = self.signal_callback_factory_map[fields["action"]]
     callback = callback_factory(widget, fields)
 
