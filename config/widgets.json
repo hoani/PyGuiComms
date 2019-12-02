@@ -1,5 +1,58 @@
 {
-  "QPushButton": false,
+  "QPushButton": {
+    "PushButton_controlManualFW": {
+      "signals": {
+        "pressed": { 
+          "action" : "set", 
+          "path": "control/manual", 
+          "args": [
+            "FW",
+            { "type": "float", "ref": "control/manual/speed", "default": 0.5 },
+            { "type": "float", "ref": "control/manual/duration", "default": 0.5 }
+          ]
+        }
+      }
+    },
+    "PushButton_controlManualBW": {
+      "signals": {
+        "pressed": { 
+          "action" : "set", 
+          "path": "control/manual", 
+          "args": [
+            "BW",
+            { "type": "float", "ref": "control/manual/speed", "default": 0.5 },
+            { "type": "float", "ref": "control/manual/duration", "default": 0.5 }
+          ]
+        }
+      }
+    },
+    "PushButton_controlManualLT": {
+      "signals": {
+        "pressed": { 
+          "action" : "set", 
+          "path": "control/manual", 
+          "args": [
+            "LT",
+            { "type": "float", "ref": "control/manual/speed", "default": 0.5 },
+            { "type": "float", "ref": "control/manual/duration", "default": 0.5 }
+          ]
+        }
+      }
+    },
+    "PushButton_controlManualRT": {
+      "signals": {
+        "pressed": { 
+          "action" : "set", 
+          "path": "control/manual", 
+          "args": [
+            "RT",
+            { "type": "float", "ref": "control/manual/speed", "default": 0.5 },
+            { "type": "float", "ref": "control/manual/duration", "default": 0.5 }
+          ]
+        }
+      }
+    }    
+  },
   "QLineEdit": {
     "LineEdit_CpuUse": { 
       "input": false,

@@ -35,14 +35,14 @@
               <item>
                <layout class="QHBoxLayout" name="horizontalLayout_5">
                 <item>
-                 <widget class="QPushButton" name="controlDisable">
+                 <widget class="QPushButton" name="PushButton_controlDisable">
                   <property name="text">
                    <string>Disable</string>
                   </property>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QPushButton" name="controlAuto">
+                 <widget class="QPushButton" name="PushButton_controlAuto">
                   <property name="text">
                    <string>Automatic</string>
                   </property>
@@ -154,7 +154,7 @@
                      </spacer>
                     </item>
                     <item>
-                     <widget class="QPushButton" name="controlManualFW">
+                     <widget class="QPushButton" name="PushButton_controlManualFW">
                       <property name="text">
                        <string>FW</string>
                       </property>
@@ -178,7 +178,7 @@
                   <item>
                    <layout class="QHBoxLayout" name="horizontalLayout_3">
                     <item>
-                     <widget class="QPushButton" name="controlManualLT">
+                     <widget class="QPushButton" name="PushButton_controlManualLT">
                       <property name="text">
                        <string>&lt;TURN&lt;</string>
                       </property>
@@ -198,7 +198,7 @@
                      </spacer>
                     </item>
                     <item>
-                     <widget class="QPushButton" name="controlManualRT">
+                     <widget class="QPushButton" name="PushButton_controlManualRT">
                       <property name="text">
                        <string>&gt;TURN&gt;</string>
                       </property>
@@ -222,7 +222,7 @@
                      </spacer>
                     </item>
                     <item>
-                     <widget class="QPushButton" name="controlManualBW">
+                     <widget class="QPushButton" name="PushButton_controlManualBW">
                       <property name="text">
                        <string>BW</string>
                       </property>

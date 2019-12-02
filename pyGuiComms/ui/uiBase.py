@@ -30,7 +30,14 @@ class WidgetSubscriptionCallback:
   def callback(self, values):
     self._callback(self._widget, values, self._config)
 
+class SetCallback:
+  def __init__(self, queue, path, payload_callbacks):
+    self._queue = callback
+    self._widget = widget
+    self._config = config
 
+  def callback(self, values):
+    self._callback(self._widget, values, self._config)
 
 class MainWindow(QtWidgets.QMainWindow):
   def __init__(self, parent=None):
@@ -53,6 +60,17 @@ class MainWindow(QtWidgets.QMainWindow):
       QtWidgets.QVBoxLayout: {
         "setVec3": self.update_plot_vec3 
       }
+    }
+
+    self.setup_map = {
+      QtWidgets.QPushButton: {
+        "pressed": self._setup_pressed,
+        "released": self._setup_released 
+      }
+    }
+
+    self.signal_callback_map = {
+      "set" : self._set_callback_factory
     }
 
   def add_upkeep(self, period_ms, callback):
@@ -99,36 +117,86 @@ class MainWindow(QtWidgets.QMainWindow):
         for name in widget_settings[element]:
           widget = self.findChild(typeof, name)
           if widget != None:
-            
             fields = widget_settings[element][name]
-            if "subscriptions" in fields:
-              subscriptions = fields["subscriptions"]
-              for path in subscriptions.keys():   
-                callback = self.callback_map[typeof][subscriptions[path]["callback"]]
-                config = subscriptions[path]["config"]
-                subscription = WidgetSubscriptionCallback(
-                  callback,
-                  widget,
-                  config
-                )
-                comms.subscribe(path, subscription.callback)
-                self.subscription_list.append(subscription)
-            
-            if "insert" in fields:
-              for insert in fields["insert"]:
-                self._insert_widget(
-                  comms,
-                  widget,
-                  typeof,
-                  insert["widget"], 
-                  insert["settings"], 
-                  insert["subscriptions"]
-                )
-
-
+            self._load_ui_widget(comms, typeof, widget, fields)
       except Exception as e:
         print("Widget interpretation failure\n", e)
         pass
+
+
+  def _load_ui_widget(self, comms, typeof, widget, fields):
+    if "subscriptions" in fields:
+      subscriptions = fields["subscriptions"]
+      for path in subscriptions.keys():   
+        callback = self.callback_map[typeof][subscriptions[path]["callback"]]
+        config = subscriptions[path]["config"]
+        subscription = WidgetSubscriptionCallback(
+          callback,
+          widget,
+          config
+        )
+        comms.subscribe(path, subscription.callback)
+        self.subscription_list.append(subscription)
+    
+    if "insert" in fields:
+      for insert in fields["insert"]:
+        self._insert_widget(
+          comms,
+          widget,
+          typeof,
+          insert["widget"], 
+          insert["settings"], 
+          insert["subscriptions"]
+        )
+
+    if "signals" in fields:
+      for signal in fields["signals"]:
+        self._register_signal(
+          signal,
+          fields["signals"][signal]
+        )
+
+  def _register_signal(self, typeof, widget, signal, fields):
+    print("reg", signal)
+    
+    callback_facotry = self.signal_callback_factory_map[fields["action"]]
+    callback = callback_factory(widget, fields)
+
+    setup = self.widget_setup_map[typeof][signal]
+    setup(widget, callback)
+    
+  def _set_callback_factory(self, widget, fields):
+    pass
+    # values = []
+    # for item in payload:
+    #   if isinstance(item, dict):
+    #     values.append(item["default"])
+    #   else:
+    #     values.append(payload[0])
+
+    # command_queue_place(path, (0.5))
+
+  # "QPushButton": {
+  #   "PushButton_ControlManualFW": {
+  #     "signals": {
+  #       "pressed": { 
+  #         "action" : "set", 
+  #         "address": "control/manual", 
+  #         "args": [
+  #           "FW",
+  #           { "type": "float", "ref": "control/manual/speed", "default": 0.5 },
+  #           { "type": "float", "ref": "control/manual/duration", "default": 0.5 }
+  #         ]
+  #       }
+  #     }
+  # },
+
+  def _setup_pressed(self, widget, callback):
+    widget.pressed.connect(callback)
+  
+  def _setup_released(self, widget, callback):
+    widget.released.connect(callback)
+      
 
   def _get_timestamp(self):
     return datetime.datetime.now().timestamp()
