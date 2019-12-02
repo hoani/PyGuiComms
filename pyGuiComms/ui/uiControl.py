@@ -17,11 +17,11 @@ class Ui():
     # button_manual_lt = self.main_window.findChild(QtWidgets.QPushButton, 'PushButton_controlManualLT')
     # button_manual_rt = self.main_window.findChild(QtWidgets.QPushButton, 'PushButton_controlManualRT')
 
-    if button_disable != None:
-      button_disable.clicked.connect(self._control_disable)
+    # if button_disable != None:
+    #   button_disable.clicked.connect(self._control_disable)
 
-    if button_auto != None:
-      button_auto.clicked.connect(self._control_auto)
+    # if button_auto != None:
+    #   button_auto.clicked.connect(self._control_auto)
 
     # if button_manual_fw != None:
     #   button_manual_fw.pressed.connect(self._control_manual_forward_pressed)
