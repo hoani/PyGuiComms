@@ -7,8 +7,8 @@
           "path": "control/manual", 
           "args": [
             "FW",
-            { "type": "float", "ref": "control/manual/speed", "default": 0.5 },
-            { "type": "float", "ref": "control/manual/duration", "default": 0.5 }
+            { "key": "control/manual/speed", "default": 0.5 },
+            { "key": "control/manual/duration", "default": 0.5 }
           ]
         },
         "released": { 
@@ -23,8 +23,8 @@
           "path": "control/manual", 
           "args": [
             "BW",
-            { "ref": "control/manual/speed", "default": 0.5 },
-            { "ref": "control/manual/duration", "default": 0.5 }
+            { "key": "control/manual/speed", "default": 0.5 },
+            { "key": "control/manual/duration", "default": 0.5 }
           ]
         },
         "released": { 
@@ -39,8 +39,8 @@
           "path": "control/manual", 
           "args": [
             "LT",
-            { "type": "float", "ref": "control/manual/speed", "default": 0.5 },
-            { "type": "float", "ref": "control/manual/duration", "default": 0.5 }
+            { "key": "control/manual/speed", "default": 0.5 },
+            { "key": "control/manual/duration", "default": 0.5 }
           ]
         },
         "released": { 
@@ -56,8 +56,8 @@
           "path": "control/manual", 
           "args": [
             "RT",
-            { "type": "float", "ref": "control/manual/speed", "default": 0.5 },
-            { "type": "float", "ref": "control/manual/duration", "default": 0.5 }
+            { "key": "control/manual/speed", "default": 0.5 },
+            { "key": "control/manual/duration", "default": 0.5 }
           ]
         },
         "released": { 
@@ -69,7 +69,7 @@
       "signals": {
         "pressed": { 
           "action" : "set", "path": "control/automatic", "args": [
-            { "type": "float", "ref": "control/automatic/speed", "default": 0.5 }
+            { "key": "control/automatic/speed", "default": 0.5 }
            ]
         }
       }
@@ -86,8 +86,8 @@
     "Slider_manualSpeed": {
       "signals": {
         "released": [
-          { "action" : "map", "path":    "control/manual/speed", "mulitplier": 0.01 },
-          { "action" : "map", "path": "control/automatic/speed", "multiplier": 0.01 }
+          { "action" : "map", "key":    "control/manual/speed", "multiplier": 0.01 },
+          { "action" : "map", "key": "control/automatic/speed", "multiplier": 0.01 }
         ]
       }
     }

@@ -41,6 +41,19 @@ class ValueMapCallback:
     else:
       return self._default
 
+class ValueMapSetterCallback:
+  def __init__(self, value_map, callback, key, multiplier):
+    self._value_map = value_map
+    self._callback = callback
+    self._key = key
+    self._multiplier = multiplier
+    if self._key not in self._value_map:
+      self.callback()
+
+  def callback(self):
+    value = self._callback() * self._multiplier
+    self._value_map[self._key] = value
+
 
 class WidgetSubscriptionCallback:
   def __init__(self, callback, widget, config):
@@ -80,7 +93,9 @@ class MainWindow(QtWidgets.QMainWindow):
     except:
         pass
 
-    self.callback_map = {
+    self.key_value_map = {}
+
+    self.subscription_callback_map = {
       QtWidgets.QLineEdit: {
         "set": self.update_text_field 
       },
@@ -93,11 +108,15 @@ class MainWindow(QtWidgets.QMainWindow):
       QtWidgets.QPushButton: {
         "pressed": self._setup_pressed,
         "released": self._setup_released 
+      },
+      QtWidgets.QSlider: {
+        "released": self._setup_slider_released 
       }
     }
 
     self.signal_callback_factory_map = {
-      "set" : self._set_callback_factory
+      "set" : self._set_callback_factory,
+      "map" : self._map_callback_factory
     }
 
   def add_upkeep(self, period_ms, callback):
@@ -155,7 +174,7 @@ class MainWindow(QtWidgets.QMainWindow):
     if "subscriptions" in fields:
       subscriptions = fields["subscriptions"]
       for path in subscriptions.keys():   
-        callback = self.callback_map[typeof][subscriptions[path]["callback"]]
+        callback = self.subscription_callback_map[typeof][subscriptions[path]["callback"]]
         config = subscriptions[path]["config"]
         subscription = WidgetSubscriptionCallback(
           callback,
@@ -196,8 +215,6 @@ class MainWindow(QtWidgets.QMainWindow):
           )
 
   def _register_signal(self, typeof, widget, signal, fields):
-    if fields["action"] == "map":
-      return
     callback_factory = self.signal_callback_factory_map[fields["action"]]
     callback = callback_factory(widget, fields)
 
@@ -209,13 +226,15 @@ class MainWindow(QtWidgets.QMainWindow):
     payload_callbacks = []
     for arg in fields["args"]:
       if isinstance(arg, dict):
-        payload_callbacks.append(
-          ValueMapCallback(
-            self.uiValueMapping, 
-            arg["ref"],
+        pl_callback = ValueMapCallback(
+            self.key_value_map, 
+            arg["key"],
             arg["default"]
-          ).callback
+          )
+        payload_callbacks.append(
+          pl_callback.callback
         )
+        self.callback_list.append(pl_callback)
       else:
         payload_callbacks.append(ValueCallback(arg).callback)
     
@@ -227,11 +246,28 @@ class MainWindow(QtWidgets.QMainWindow):
     self.callback_list.append(set_callback)
     return set_callback.callback
 
+  def _map_callback_factory(self, widget, fields):
+    key = fields["key"]
+    multiplier = fields["multiplier"]
+
+    map_callback = ValueMapSetterCallback(
+      self.key_value_map, 
+      widget.value,
+      key,
+      multiplier
+    )
+    
+    self.callback_list.append(map_callback)
+    return map_callback.callback
+
   def _setup_pressed(self, widget, callback):
     widget.pressed.connect(callback)
   
   def _setup_released(self, widget, callback):
     widget.released.connect(callback)
+
+  def _setup_slider_released(self, widget, callback):
+    widget.sliderReleased.connect(callback)
       
 
   def _get_timestamp(self):
@@ -246,8 +282,7 @@ class MainWindow(QtWidgets.QMainWindow):
     
 
     for path in subscriptions.keys():
-      print(path)  
-      callback = self.callback_map[parent_type][subscriptions[path]["callback"]]
+      callback = self.subscription_callback_map[parent_type][subscriptions[path]["callback"]]
       config = subscriptions[path]["config"]
       subscription = WidgetSubscriptionCallback(
         callback,
