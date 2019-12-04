@@ -3,7 +3,7 @@ from PySide2 import QtCore, QtWidgets, QtGui
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtCore import QFile
 from pyGuiComms.utilities import vect
-from pyGuiComms.ui import plotCanvas
+from pyGuiComms.ui import plotCanvas, extraConsole
 import sys, os
 import datetime
 import numpy as np
@@ -77,6 +77,14 @@ class SetCallback:
       payload.append(callback())
 
     self._callback(self._path, tuple(payload))
+
+class ConstantValueCallback:
+  def __init__(self, callback, value):
+    self._callback = callback
+    self._value = value
+
+  def callback(self):
+    self._callback(self._value)
 
 
 class PeriodicCallback:
@@ -196,6 +204,13 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
   def _load_ui_widget(self, comms, typeof, widget, fields):
+    if "stream" in fields:
+      if fields["stream"]["target"] == "stdout":
+        sys.stdout = extraConsole.extraConsole(widget, typeof.insertPlainText)
+        callback = ConstantValueCallback(widget.moveCursor, QtGui.QTextCursor.End)
+        widget.textChanged.connect(callback.callback)
+        self.callback_list.append(callback)
+
     if "subscriptions" in fields:
       subscriptions = fields["subscriptions"]
       for path in subscriptions.keys():   
@@ -329,6 +344,9 @@ class MainWindow(QtWidgets.QMainWindow):
       )
       comms.subscribe(path, subscription.callback)
       self.callback_list.append(subscription)
+
+  def _console_cursor(self):
+    self.console.moveCursor(QtGui.QTextCursor.End)
     
     
 

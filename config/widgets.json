@@ -1,4 +1,11 @@
 {
+  "QTextEdit": {
+    "TextEdit_console": {
+      "stream": {
+        "target": "stdout"
+      }
+    }
+  },
   "QPushButton": {
     "PushButton_controlManualFW": {
       "signals": {

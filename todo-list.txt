@@ -1,9 +1,11 @@
 [ ] Big Project - JSON config for connecting signals to GUI
     [X] Add data map to GUI
     [X] Add continuous holding functionality
-    [ ] Move UI debug into uiExecute?
-    [ ] Tidy up of all UI elements - delete specific elements
+    [X] Move UI debug into uiBase
+    [X] Tidy up of all UI elements - delete specific elements
+    [ ] Refactor effort to tidy up uiBase
     [ ] Add power status UI
+[] UI Callbacks - break out into a utilities file and add unit testing
 [] Add default config file for default IP addresses etc
 [] Investigate using TOML as a config format
 [] Separate logger from ui elements

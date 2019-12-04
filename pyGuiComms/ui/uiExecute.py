@@ -2,7 +2,7 @@ import sys, io
 from PySide2.QtWidgets import QApplication
 import queue
 from pyGuiComms.utilities import cli, logger
-from pyGuiComms.ui import uiBase, uiImu, uiControl, uiDebug
+from pyGuiComms.ui import uiBase
 from pyGuiComms.comms import commsClient
 import json
 
@@ -51,7 +51,7 @@ class UiExecute:
     window.add_upkeep(20, comms.upkeep)
     window.set_command_queue(command_queue)
 
-    window.load_ui_elements([uiDebug], comms, log_entries, widget_settings)
+    window.load_ui_elements([], comms, log_entries, widget_settings)
 
 
 
