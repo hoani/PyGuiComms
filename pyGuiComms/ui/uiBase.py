@@ -1,3 +1,8 @@
+# Author: Hoani Bryson
+#
+# UI Base - Binds UI control to a QT mainWindow object
+#  from a configuration map
+
 from PySide2.QtWidgets import QApplication
 from PySide2 import QtCore, QtWidgets, QtGui
 from PySide2.QtUiTools import QUiLoader
@@ -110,13 +115,11 @@ class PeriodicCallback:
 class MainWindow(QtWidgets.QMainWindow):
   def __init__(self, parent=None):
     super().__init__(parent)
-    self.t_start = datetime.datetime.now().timestamp()
     self.show()
+    self.t_start = datetime.datetime.now().timestamp()
     self.command_queue = None
     self.upkeep_timer = []
-    self.ui_objs = []
     self.callback_list = [] # This is used to avoid garbage collection
-    self.uiValueMapping = {}
     try:
         self.setStyleSheet(qdarkstyle.load_stylesheet_pyside2())
     except:
@@ -156,7 +159,6 @@ class MainWindow(QtWidgets.QMainWindow):
     timer.timeout.connect(callback)
     return timer
 
-  
 
   def update_text_field(self, item, values=[0.0], config=["{:0.3f}"]):
     pattern = config[0]
@@ -179,17 +181,7 @@ class MainWindow(QtWidgets.QMainWindow):
   def command_queue_place(self, path, payload):
     self.command_queue.put((path, payload))
 
-  def load_ui_elements(self, ui_element_list, comms, log_entries, widget_settings):
-    if log_entries != None:
-      log_entries.add('timestamp', self._get_timestamp)
-
-    for idx, ui_element in enumerate(ui_element_list):
-      ui = ui_element.Ui(self)
-      ui.set_subscriptions(comms.subscribe)
-      if log_entries != None:
-        ui.add_log_entries(log_entries)
-      self.ui_objs.append(ui)
-
+  def load_ui_elements(self, comms, widget_settings):
     for element in widget_settings.keys():
       try:
         typeof = eval("QtWidgets."+element)
