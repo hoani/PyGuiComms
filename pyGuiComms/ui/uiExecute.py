@@ -51,7 +51,7 @@ class UiExecute:
     window.add_upkeep(20, comms.upkeep)
     window.set_command_queue(command_queue)
 
-    window.load_ui_elements([uiImu, uiControl, uiDebug], comms, log_entries, widget_settings)
+    window.load_ui_elements([uiDebug], comms, log_entries, widget_settings)
 
 
 

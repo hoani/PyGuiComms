@@ -47,46 +47,46 @@ class Ui():
   def set_subscriptions(self, subscribe):
     return
 
-  def _manual_upkeep(self):
-    if self.manual_upkeep != None:
-      self.manual_upkeep()
+  # def _manual_upkeep(self):
+  #   if self.manual_upkeep != None:
+  #     self.manual_upkeep()
 
-  def _control_disable(self):
-    self.main_window.command_queue_place('control/disable', ())
+  # def _control_disable(self):
+  #   self.main_window.command_queue_place('control/disable', ())
 
-  def _control_auto(self):
-    self.main_window.command_queue_place('control/automatic', (0.5))
+  # def _control_auto(self):
+  #   self.main_window.command_queue_place('control/automatic', (0.5))
 
-  def _manual_speed(self):
-    self.manual_speed = self.slider_manual_speed.value()/100.0
+  # def _manual_speed(self):
+  #   self.manual_speed = self.slider_manual_speed.value()/100.0
 
-  def _control_manual_forward(self):
-    self._control_manual_cmd("FW")
+  # def _control_manual_forward(self):
+  #   self._control_manual_cmd("FW")
   
-  def _control_manual_backward(self):
-    self._control_manual_cmd("BW")
+  # def _control_manual_backward(self):
+  #   self._control_manual_cmd("BW")
   
-  def _control_manual_left(self):
-    self._control_manual_cmd("LT")
+  # def _control_manual_left(self):
+  #   self._control_manual_cmd("LT")
   
-  def _control_manual_right(self):
-    self._control_manual_cmd("RT")
+  # def _control_manual_right(self):
+  #   self._control_manual_cmd("RT")
 
-  def _control_manual_cmd(self, dir):
-    self.main_window.command_queue_place('control/manual', (dir, self.manual_speed))
+  # def _control_manual_cmd(self, dir):
+  #   self.main_window.command_queue_place('control/manual', (dir, self.manual_speed))
 
-  def _control_manual_forward_pressed(self):
-    self.manual_upkeep = self._control_manual_forward
+  # def _control_manual_forward_pressed(self):
+  #   self.manual_upkeep = self._control_manual_forward
   
-  def _control_manual_backward_pressed(self):
-    self.manual_upkeep = self._control_manual_backward
+  # def _control_manual_backward_pressed(self):
+  #   self.manual_upkeep = self._control_manual_backward
   
-  def _control_manual_left_pressed(self):
-    self.manual_upkeep = self._control_manual_left
+  # def _control_manual_left_pressed(self):
+  #   self.manual_upkeep = self._control_manual_left
   
-  def _control_manual_right_pressed(self):
-    self.manual_upkeep = self._control_manual_right
+  # def _control_manual_right_pressed(self):
+  #   self.manual_upkeep = self._control_manual_right
 
-  def _control_manual_release(self):
-    self.manual_upkeep = None
-    self._control_disable() 
+  # def _control_manual_release(self):
+  #   self.manual_upkeep = None
+  #   self._control_disable() 

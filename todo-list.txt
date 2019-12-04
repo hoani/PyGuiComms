@@ -1,6 +1,7 @@
 [ ] Big Project - JSON config for connecting signals to GUI
     [X] Add data map to GUI
-    [ ] Add continuous holding functionality
+    [X] Add continuous holding functionality
+    [ ] Move UI debug into uiExecute?
     [ ] Tidy up of all UI elements - delete specific elements
     [ ] Add power status UI
 [] Add default config file for default IP addresses etc
