@@ -36,10 +36,10 @@ class Ui():
     #   button_manual_rt.pressed.connect(self._control_manual_right_pressed)
     #   button_manual_rt.released.connect(self._control_manual_release)
 
-    self.slider_manual_speed = self.main_window.findChild(QtWidgets.QSlider, 'manualSpeed')
-    if self.slider_manual_speed != None:
-      self.slider_manual_speed.sliderReleased.connect(self._manual_speed) 
-    self.manual_speed = 0.5
+    # self.slider_manual_speed = self.main_window.findChild(QtWidgets.QSlider, 'manualSpeed')
+    # if self.slider_manual_speed != None:
+    #   self.slider_manual_speed.sliderReleased.connect(self._manual_speed) 
+    # self.manual_speed = 0.5
 
   def add_log_entries(self, log_entries):
     return

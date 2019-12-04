@@ -1,8 +1,8 @@
-[] Big Project - JSON config for connecting signals to GUI
-    [] Add data map to GUI
-    [] Add continuous holding functionality
-    [] Tidy up of all UI elements - delete specific elements
-    [] Add power status UI
+[ ] Big Project - JSON config for connecting signals to GUI
+    [X] Add data map to GUI
+    [ ] Add continuous holding functionality
+    [ ] Tidy up of all UI elements - delete specific elements
+    [ ] Add power status UI
 [] Add default config file for default IP addresses etc
 [] Investigate using TOML as a config format
 [] Separate logger from ui elements
