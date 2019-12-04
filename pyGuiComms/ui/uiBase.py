@@ -78,6 +78,27 @@ class SetCallback:
 
     self._callback(self._path, tuple(payload))
 
+
+class PeriodicCallback:
+  def __init__(self, period_ms, callback, add_upkeep):
+    self._period_ms = period_ms
+    self._callback = callback
+    self._add_upkeep = add_upkeep
+    self._timer = None
+
+  def start(self):
+    if (self._timer == None):
+      self._timer = self._add_upkeep(self._period_ms, self._callback)
+    else:
+      self._timer.start(self._period_ms)
+    self.callback()
+
+  def stop(self):
+    self._timer.stop()
+
+  def callback(self):
+    self._callback()
+
 class MainWindow(QtWidgets.QMainWindow):
   def __init__(self, parent=None):
     super().__init__(parent)
@@ -119,11 +140,15 @@ class MainWindow(QtWidgets.QMainWindow):
       "map" : self._map_callback_factory
     }
 
+
   def add_upkeep(self, period_ms, callback):
     timer = QtCore.QTimer(self)
     self.upkeep_timer.append(timer)
     timer.start(period_ms)
     timer.timeout.connect(callback)
+    return timer
+
+  
 
   def update_text_field(self, item, values=[0.0], config=["{:0.3f}"]):
     pattern = config[0]
@@ -217,9 +242,22 @@ class MainWindow(QtWidgets.QMainWindow):
   def _register_signal(self, typeof, widget, signal, fields):
     callback_factory = self.signal_callback_factory_map[fields["action"]]
     callback = callback_factory(widget, fields)
-
     setup = self.widget_setup_map[typeof][signal]
-    setup(widget, callback)
+
+    if "repeat" in fields:
+      params = fields["repeat"]
+      period_ms = params["rate"] * 1000
+      
+      stop_signal = params["stop"]
+      stop_setup = self.widget_setup_map[typeof][stop_signal]
+
+      periodic = PeriodicCallback(period_ms, callback, self.add_upkeep)
+      self.callback_list.append(periodic)
+
+      setup(widget, periodic.start)
+      stop_setup(widget, periodic.stop) 
+    else:
+      setup(widget, callback)
     
   def _set_callback_factory(self, widget, fields):
     path = fields["path"]

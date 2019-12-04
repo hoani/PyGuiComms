@@ -3,6 +3,7 @@
     "PushButton_controlManualFW": {
       "signals": {
         "pressed": { 
+          "repeat": { "rate": 0.5, "stop": "released" }, 
           "action" : "set", 
           "path": "control/manual", 
           "args": [
@@ -19,6 +20,7 @@
     "PushButton_controlManualBW": {
       "signals": {
         "pressed": { 
+          "repeat": { "rate": 0.5, "stop": "released" }, 
           "action" : "set", 
           "path": "control/manual", 
           "args": [
@@ -35,6 +37,7 @@
     "PushButton_controlManualLT": {
       "signals": {
         "pressed": { 
+          "repeat": { "rate": 0.5, "stop": "released" }, 
           "action" : "set", 
           "path": "control/manual", 
           "args": [
@@ -51,8 +54,8 @@
     "PushButton_controlManualRT": {
       "signals": {
         "pressed": { 
+          "repeat": { "rate": 0.5, "stop": "released" }, 
           "action" : "set",
-          "repeat": { "rate": 0.5, "cancel": "released" }, 
           "path": "control/manual", 
           "args": [
             "RT",
