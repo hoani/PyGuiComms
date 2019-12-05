@@ -17,6 +17,7 @@ try:
 except:
   pass
 
+
 def load_from_file(filepath):
   ui_file = QFile(filepath)
   ui_file.open(QFile.ReadOnly)
@@ -25,6 +26,7 @@ def load_from_file(filepath):
   window = loader.load(ui_file)
   ui_file.close()
   return window
+
 
 class ValueCallback:
   def __init__(self, value):
@@ -45,6 +47,7 @@ class ValueMapCallback:
       return self._value_map[self._key]
     else:
       return self._default
+
 
 class ValueMapSetterCallback:
   def __init__(self, value_map, callback, key, multiplier):
@@ -83,6 +86,7 @@ class SetCallback:
 
     self._callback(self._path, tuple(payload))
 
+
 class ConstantValueCallback:
   def __init__(self, callback, value):
     self._callback = callback
@@ -111,6 +115,7 @@ class PeriodicCallback:
 
   def callback(self):
     self._callback()
+
 
 class MainWindow(QtWidgets.QMainWindow):
   def __init__(self, parent=None):
@@ -152,6 +157,24 @@ class MainWindow(QtWidgets.QMainWindow):
     }
 
 
+  def load(self, comms, widget_settings):
+    for element in widget_settings.keys():
+      try:
+        typeof = eval("QtWidgets."+element)
+        for name in widget_settings[element]:
+          widget = self.findChild(typeof, name)
+          if widget != None:
+            fields = widget_settings[element][name]
+            self._load_ui_widget(comms, typeof, widget, fields)
+      except Exception as e:
+        print("Widget interpretation failure\n", e)
+        pass
+
+
+  def set_command_queue(self, queue):
+    self.command_queue = queue
+
+
   def add_upkeep(self, period_ms, callback):
     timer = QtCore.QTimer(self)
     self.upkeep_timer.append(timer)
@@ -168,33 +191,15 @@ class MainWindow(QtWidgets.QMainWindow):
     else:
       item.setText(pattern.format(value))
 
+
   def update_plot_vec3(self, item, values=vect.Vec3(0,0,0), config=[]):
     if item == None:
       return
     else:
       t = datetime.datetime.now().timestamp() - self.t_start
       item.update_data(t, vect.Vec3(values))
-
-  def set_command_queue(self, queue):
-    self.command_queue = queue
-
-  def command_queue_place(self, path, payload):
-    self.command_queue.put((path, payload))
-
-  def load_ui_elements(self, comms, widget_settings):
-    for element in widget_settings.keys():
-      try:
-        typeof = eval("QtWidgets."+element)
-        for name in widget_settings[element]:
-          widget = self.findChild(typeof, name)
-          if widget != None:
-            fields = widget_settings[element][name]
-            self._load_ui_widget(comms, typeof, widget, fields)
-      except Exception as e:
-        print("Widget interpretation failure\n", e)
-        pass
-
-
+  
+  
   def _load_ui_widget(self, comms, typeof, widget, fields):
     if "stream" in fields:
       if fields["stream"]["target"] == "stdout":
@@ -246,6 +251,7 @@ class MainWindow(QtWidgets.QMainWindow):
             fields["signals"][signal]
           )
 
+
   def _register_signal(self, typeof, widget, signal, fields):
     callback_factory = self.signal_callback_factory_map[fields["action"]]
     callback = callback_factory(widget, fields)
@@ -265,7 +271,8 @@ class MainWindow(QtWidgets.QMainWindow):
       stop_setup(widget, periodic.stop) 
     else:
       setup(widget, callback)
-    
+
+
   def _set_callback_factory(self, widget, fields):
     path = fields["path"]
     payload_callbacks = []
@@ -284,12 +291,17 @@ class MainWindow(QtWidgets.QMainWindow):
         payload_callbacks.append(ValueCallback(arg).callback)
     
     set_callback = SetCallback(
-      self.command_queue_place, 
+      self._command_queue_place, 
       path, 
       payload_callbacks
     )
     self.callback_list.append(set_callback)
     return set_callback.callback
+
+
+  def _command_queue_place(self, path, payload):
+    self.command_queue.put((path, payload))
+
 
   def _map_callback_factory(self, widget, fields):
     key = fields["key"]

@@ -3,7 +3,7 @@
     [X] Add continuous holding functionality
     [X] Move UI debug into uiBase
     [X] Tidy up of all UI elements - delete specific elements
-    [ ] Refactor effort to tidy up uiBase
+    [X] Refactor effort to tidy up uiBase
     [ ] Add power status UI
 [] UI Callbacks - break out into a utilities file and add unit testing
 [] Add default config file for default IP addresses etc
