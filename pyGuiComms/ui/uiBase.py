@@ -136,7 +136,7 @@ class MainWindow(QtWidgets.QMainWindow):
       QtWidgets.QLineEdit: {
         "set": self.update_text_field 
       },
-      QtWidgets.QVBoxLayout: {
+      QtWidgets.QBoxLayout: {
         "setVec3": self.update_plot_vec3,
         "setSingle": self.update_plot_single, 
       }
@@ -165,6 +165,7 @@ class MainWindow(QtWidgets.QMainWindow):
         for name in widget_settings[element]:
           widget = self.findChild(typeof, name)
           if widget != None:
+            print(typeof)
             fields = widget_settings[element][name]
             self._load_ui_widget(comms, typeof, widget, fields)
       except Exception as e:

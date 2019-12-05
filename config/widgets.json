@@ -103,7 +103,7 @@
     }
   },
   "QLineEdit": {
-    "LineEdit_CpuUse": { 
+    "LineEdit_cpuUse": { 
       "input": false,
       "subscriptions": { 
         "health/os/cpuse": { "callback": "set", "config": ["{:0.3f}"]} 
@@ -170,8 +170,8 @@
       }
     }
   },
-  "QVBoxLayout": {
-    "VBox_Imu":{
+  "QBoxLayout": {
+    "Box_imu":{
       "insert": [
         {
           "widget": "plotVec3",
@@ -196,7 +196,7 @@
         }
       ]
     },
-    "VBox_health":{
+    "Box_health":{
       "insert": [
         {
           "widget": "plotSingle",
