@@ -195,6 +195,24 @@
           } 
         }
       ]
+    },
+    "VBox_health":{
+      "insert": [
+        {
+          "widget": "plotSingle",
+          "settings": { "title": "Cpu Usage (%)" },
+          "subscriptions": {
+            "health/batt/v": { "callback": "setSingle", "config": [] }
+          } 
+        },
+        {
+          "widget": "plotSingle",
+          "settings": { "title": "Gyroscopes (deg.s-1)" },
+          "subscriptions": { 
+            "health/os/cpuse": { "callback": "setSingle", "config": [] }
+          } 
+        }
+      ]
     }   
   }
 }

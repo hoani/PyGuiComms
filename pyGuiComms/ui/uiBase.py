@@ -137,7 +137,8 @@ class MainWindow(QtWidgets.QMainWindow):
         "set": self.update_text_field 
       },
       QtWidgets.QVBoxLayout: {
-        "setVec3": self.update_plot_vec3 
+        "setVec3": self.update_plot_vec3,
+        "setSingle": self.update_plot_single, 
       }
     }
 
@@ -198,6 +199,14 @@ class MainWindow(QtWidgets.QMainWindow):
     else:
       t = datetime.datetime.now().timestamp() - self.t_start
       item.update_data(t, vect.Vec3(values))
+  
+
+  def update_plot_single(self, item, values=0, config=[]):
+    if item == None:
+      return
+    else:
+      t = datetime.datetime.now().timestamp() - self.t_start
+      item.update_data(t, values)
   
   
   def _load_ui_widget(self, comms, typeof, widget, fields):
@@ -335,6 +344,11 @@ class MainWindow(QtWidgets.QMainWindow):
     if widget_str == "plotVec3":
       setting_title = settings["title"]
       new_widget = plotCanvas.XyzPlotCanvas(title=setting_title)
+      parent_widget.addWidget(new_widget)
+
+    if widget_str == "plotSingle":
+      setting_title = settings["title"]
+      new_widget = plotCanvas.SinglePlotCanvas(title=setting_title)
       parent_widget.addWidget(new_widget)
     
 
