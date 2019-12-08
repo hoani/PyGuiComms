@@ -7,7 +7,7 @@ from PySide2.QtWidgets import QApplication
 from PySide2 import QtCore, QtWidgets, QtGui
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtCore import QFile
-from pyGuiComms.utilities import vect
+from pyGuiComms.utilities import vect, cbc
 from pyGuiComms.ui import plotCanvas, extraConsole
 import sys, os
 import datetime
@@ -26,41 +26,6 @@ def load_from_file(filepath):
   window = loader.load(ui_file)
   ui_file.close()
   return window
-
-
-class ValueCallback:
-  def __init__(self, value):
-    self._value = value
-
-  def callback(self):
-    return self._value
-
-
-class ValueMapCallback:
-  def __init__(self, value_map, key, default):
-    self._value_map = value_map
-    self._key = key
-    self._default = default
-
-  def callback(self):
-    if self._key in self._value_map:
-      return self._value_map[self._key]
-    else:
-      return self._default
-
-
-class ValueMapSetterCallback:
-  def __init__(self, value_map, callback, key, multiplier):
-    self._value_map = value_map
-    self._callback = callback
-    self._key = key
-    self._multiplier = multiplier
-    if self._key not in self._value_map:
-      self.callback()
-
-  def callback(self):
-    value = self._callback() * self._multiplier
-    self._value_map[self._key] = value
 
 
 class WidgetSubscriptionCallback:
@@ -87,36 +52,6 @@ class SetCallback:
     self._callback(self._path, tuple(payload))
 
 
-class ConstantValueCallback:
-  def __init__(self, callback, value):
-    self._callback = callback
-    self._value = value
-
-  def callback(self):
-    self._callback(self._value)
-
-
-class PeriodicCallback:
-  def __init__(self, period_ms, callback, add_upkeep):
-    self._period_ms = period_ms
-    self._callback = callback
-    self._add_upkeep = add_upkeep
-    self._timer = None
-
-  def start(self):
-    if (self._timer == None):
-      self._timer = self._add_upkeep(self._period_ms, self._callback)
-    else:
-      self._timer.start(self._period_ms)
-    self.callback()
-
-  def stop(self):
-    self._timer.stop()
-
-  def callback(self):
-    self._callback()
-
-
 class MainWindow(QtWidgets.QMainWindow):
   def __init__(self, parent=None):
     super().__init__(parent)
@@ -134,21 +69,21 @@ class MainWindow(QtWidgets.QMainWindow):
 
     self.subscription_callback_map = {
       QtWidgets.QLineEdit: {
-        "set": self.update_text_field 
+        "set": self.update_text_field
       },
       QtWidgets.QBoxLayout: {
         "setVec3": self.update_plot_vec3,
-        "setSingle": self.update_plot_single, 
+        "setSingle": self.update_plot_single,
       }
     }
 
     self.widget_setup_map = {
       QtWidgets.QPushButton: {
         "pressed": self._setup_pressed,
-        "released": self._setup_released 
+        "released": self._setup_released
       },
       QtWidgets.QSlider: {
-        "released": self._setup_slider_released 
+        "released": self._setup_slider_released
       }
     }
 
@@ -200,7 +135,7 @@ class MainWindow(QtWidgets.QMainWindow):
     else:
       t = datetime.datetime.now().timestamp() - self.t_start
       item.update_data(t, vect.Vec3(values))
-  
+
 
   def update_plot_single(self, item, values=0, config=[]):
     if item == None:
@@ -208,19 +143,19 @@ class MainWindow(QtWidgets.QMainWindow):
     else:
       t = datetime.datetime.now().timestamp() - self.t_start
       item.update_data(t, values)
-  
-  
+
+
   def _load_ui_widget(self, comms, typeof, widget, fields):
     if "stream" in fields:
       if fields["stream"]["target"] == "stdout":
         sys.stdout = extraConsole.extraConsole(widget, typeof.insertPlainText)
-        callback = ConstantValueCallback(widget.moveCursor, QtGui.QTextCursor.End)
+        callback = cbx.InjectValueCallback(widget.moveCursor, QtGui.QTextCursor.End)
         widget.textChanged.connect(callback.callback)
         self.callback_list.append(callback)
 
     if "subscriptions" in fields:
       subscriptions = fields["subscriptions"]
-      for path in subscriptions.keys():   
+      for path in subscriptions.keys():
         callback = self.subscription_callback_map[typeof][subscriptions[path]["callback"]]
         config = subscriptions[path]["config"]
         subscription = WidgetSubscriptionCallback(
@@ -230,15 +165,15 @@ class MainWindow(QtWidgets.QMainWindow):
         )
         comms.subscribe(path, subscription.callback)
         self.callback_list.append(subscription)
-    
+
     if "insert" in fields:
       for insert in fields["insert"]:
         self._insert_widget(
           comms,
           widget,
           typeof,
-          insert["widget"], 
-          insert["settings"], 
+          insert["widget"],
+          insert["settings"],
           insert["subscriptions"]
         )
 
@@ -270,15 +205,15 @@ class MainWindow(QtWidgets.QMainWindow):
     if "repeat" in fields:
       params = fields["repeat"]
       period_ms = params["rate"] * 1000
-      
+
       stop_signal = params["stop"]
       stop_setup = self.widget_setup_map[typeof][stop_signal]
 
-      periodic = PeriodicCallback(period_ms, callback, self.add_upkeep)
+      periodic = cbc.PeriodicCallback(period_ms, callback, self.add_upkeep)
       self.callback_list.append(periodic)
 
       setup(widget, periodic.start)
-      stop_setup(widget, periodic.stop) 
+      stop_setup(widget, periodic.stop)
     else:
       setup(widget, callback)
 
@@ -288,8 +223,8 @@ class MainWindow(QtWidgets.QMainWindow):
     payload_callbacks = []
     for arg in fields["args"]:
       if isinstance(arg, dict):
-        pl_callback = ValueMapCallback(
-            self.key_value_map, 
+        pl_callback = cbc.MapGetterCallback(
+            self.key_value_map,
             arg["key"],
             arg["default"]
           )
@@ -298,11 +233,11 @@ class MainWindow(QtWidgets.QMainWindow):
         )
         self.callback_list.append(pl_callback)
       else:
-        payload_callbacks.append(ValueCallback(arg).callback)
-    
+        payload_callbacks.append(cbc.ValueCallback(arg).callback)
+
     set_callback = SetCallback(
-      self._command_queue_place, 
-      path, 
+      self._command_queue_place,
+      path,
       payload_callbacks
     )
     self.callback_list.append(set_callback)
@@ -317,25 +252,25 @@ class MainWindow(QtWidgets.QMainWindow):
     key = fields["key"]
     multiplier = fields["multiplier"]
 
-    map_callback = ValueMapSetterCallback(
-      self.key_value_map, 
-      widget.value,
+    map_callback = cbc.MapSetterCallback(
+      self.key_value_map,
       key,
+      widget.value,
       multiplier
     )
-    
+
     self.callback_list.append(map_callback)
     return map_callback.callback
 
   def _setup_pressed(self, widget, callback):
     widget.pressed.connect(callback)
-  
+
   def _setup_released(self, widget, callback):
     widget.released.connect(callback)
 
   def _setup_slider_released(self, widget, callback):
     widget.sliderReleased.connect(callback)
-      
+
 
   def _get_timestamp(self):
     return datetime.datetime.now().timestamp()
@@ -351,7 +286,7 @@ class MainWindow(QtWidgets.QMainWindow):
       setting_title = settings["title"]
       new_widget = plotCanvas.SinglePlotCanvas(title=setting_title)
       parent_widget.addWidget(new_widget)
-    
+
 
     for path in subscriptions.keys():
       callback = self.subscription_callback_map[parent_type][subscriptions[path]["callback"]]
@@ -366,7 +301,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
   def _console_cursor(self):
     self.console.moveCursor(QtGui.QTextCursor.End)
-    
-    
+
+
 
 
