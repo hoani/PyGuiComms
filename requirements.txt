@@ -1,0 +1,5 @@
+pytest
+pyside2
+numpy
+matplotlib
+pybluez
