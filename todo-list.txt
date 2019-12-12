@@ -21,7 +21,6 @@
 [] Integrate webcam
 [] Handle disconnects from host better (tcp)
 [] Handle disconnects from host better (bt)
-[] Change CI to use python 3.6 for compatability on testing
 
 Better snap tool
 Paste 2
