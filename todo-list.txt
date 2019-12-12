@@ -1,13 +1,27 @@
 [] Add default config file for default IP addresses etc
 [] Investigate using TOML as a config format
-[] Separate logger from ui elements
+[] Implement a logger
     [] Use a logger config to select and choose logged parameters
+    [] Use callback methods to subscribe to data
+    [] May need to implment a data model map which stores current values
 [] Big Project - Gui Launcher As Proxy
 [] Integrate infrared sensor
 [] Add servo UI
+    [] Investigate new UI elements for showing angle etc
+    [] Implement in a servo UI - should include drop down for selecting a servo
 [] Add Navigation UI
+    [] Investigate a good UI element for showing a map
+    [] Implement in a nav UI
+[] Add GPIO UI
+    [] Implement a GPIO UI
+    [] Include the ability to change between Input to Output
+    [] Input mode reads, output mode outputs
 [] Add file headers and descriptions
+    [] Research licence types and select license
 [] Integrate webcam
 [] Handle disconnects from host better (tcp)
 [] Handle disconnects from host better (bt)
 [] Change CI to use python 3.6 for compatability on testing
+
+Better snap tool
+Paste 2
