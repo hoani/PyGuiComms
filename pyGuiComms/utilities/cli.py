@@ -5,28 +5,36 @@ def get_args(default_settings):
 
   parser = argparse.ArgumentParser(description='A robot GUI')
   parser.add_argument(
-    '--bluetooth', 
+    '--bluetooth',
     help="Add host bluetooth port, requires MAC address and port number",
     default=[default_settings["bluetooth"]["address"], default_settings["bluetooth"]["port"]],
     metavar=("MAC","port"),
     nargs=2,
     type=str
-    )
+  )
+
   parser.add_argument(
-    '--tcp', 
+    '--tcp',
     help="Add host tcp port, requires ip address and port number",
     default=None,
     metavar=("ip", "port"),
     nargs=2,
     type=str
-    )
+  )
 
   parser.add_argument(
-    '--no-connect', 
-    help="Run in no-connect mode", 
-    action='store_true'
+    '--tcp-remote-log',
+    help="Add remote logging tcp port",
+    default=None,
+    metavar="port"
+  )
+
+  parser.add_argument(
+    '--no-connect',
+    help="Run in no-connect mode",
+    action='store_true',
     )
-  
+
   parser.add_argument(
     '--data-logging',
     help="Enable data logging as a csv for analysis",

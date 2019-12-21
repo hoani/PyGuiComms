@@ -18,6 +18,7 @@
     [] Input mode reads, output mode outputs
 [] Add file headers and descriptions
     [] Research licence types and select license
+[] UI Base - make multi-parameter set commands set the key-value map (see line 55)
 [] Integrate webcam
 [] Handle disconnects from host better (tcp)
 [] Handle disconnects from host better (bt)
