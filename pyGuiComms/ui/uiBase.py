@@ -7,7 +7,7 @@ from PySide2.QtWidgets import QApplication
 from PySide2 import QtCore, QtWidgets, QtGui
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtCore import QFile
-from pyGuiComms.utilities import vect, cbc
+from pyGuiComms.utilities import vect, cbc, debug
 from pyGuiComms.ui import plotCanvas, extraConsole
 import sys, os
 import datetime
@@ -39,10 +39,14 @@ class WidgetSubscriptionCallback:
 
 
 class SetCallback:
-  def __init__(self, queue_callback, path, payload_callbacks):
+  def __init__(self, queue_callback, path, payload_callbacks, kvmap):
     self._callback = queue_callback
     self._path = path
     self._payload_callbacks = payload_callbacks
+    self._map = kvmap
+
+    if len(payload_callbacks) == 1:
+      self._map[self._path] = payload_callbacks[0]()
 
   def callback(self):
     payload = []
@@ -50,6 +54,10 @@ class SetCallback:
       payload.append(callback())
 
     self._callback(self._path, tuple(payload))
+
+    # TODO, need a nice way to dig into paths and set multi-item paths
+    if len(payload) == 1:
+      self._map[self._path] = payload[0]
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -92,6 +100,10 @@ class MainWindow(QtWidgets.QMainWindow):
       "map" : self._map_callback_factory
     }
 
+  
+  def get_data_map(self):
+    return self.key_value_map
+
 
   def load(self, comms, widget_settings):
     for element in widget_settings.keys():
@@ -100,12 +112,11 @@ class MainWindow(QtWidgets.QMainWindow):
         for name in widget_settings[element]:
           widget = self.findChild(typeof, name)
           if widget != None:
-            print(typeof)
             fields = widget_settings[element][name]
             self._load_ui_widget(comms, typeof, widget, fields)
       except Exception as e:
-        print("Widget interpretation failure\n", e)
-        pass
+        print("Widget interpretation failure\n")
+        debug.print_exception(e)
 
 
   def set_command_queue(self, queue):
@@ -146,56 +157,58 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
   def _load_ui_widget(self, comms, typeof, widget, fields):
-    if "stream" in fields:
-      if fields["stream"]["target"] == "stdout":
-        sys.stdout = extraConsole.extraConsole(widget, typeof.insertPlainText)
-        callback = cbx.InjectValueCallback(widget.moveCursor, QtGui.QTextCursor.End)
-        widget.textChanged.connect(callback.callback)
-        self.callback_list.append(callback)
+    try:
+      if "stream" in fields:
+        if fields["stream"]["target"] == "stdout":
+          sys.stdout = extraConsole.extraConsole(widget, typeof.insertPlainText)
+          callback = cbc.InjectValueCallback(widget.moveCursor, QtGui.QTextCursor.End)
+          widget.textChanged.connect(callback.callback)
+          self.callback_list.append(callback)
 
-    if "subscriptions" in fields:
-      subscriptions = fields["subscriptions"]
-      for path in subscriptions.keys():
-        callback = self.subscription_callback_map[typeof][subscriptions[path]["callback"]]
-        config = subscriptions[path]["config"]
-        subscription = WidgetSubscriptionCallback(
-          callback,
-          widget,
-          config
-        )
-        comms.subscribe(path, subscription.callback)
-        self.callback_list.append(subscription)
-
-    if "insert" in fields:
-      for insert in fields["insert"]:
-        self._insert_widget(
-          comms,
-          widget,
-          typeof,
-          insert["widget"],
-          insert["settings"],
-          insert["subscriptions"]
-        )
-
-    if "signals" in fields:
-      for signal in fields["signals"].keys():
-        if isinstance(fields["signals"][signal], list):
-          for item in fields["signals"][signal]:
-            self._register_signal(
-              typeof,
-              widget,
-              signal,
-              item
-            )
-
-        else:
-          self._register_signal(
-            typeof,
+      if "subscriptions" in fields:
+        subscriptions = fields["subscriptions"]
+        for path in subscriptions.keys():
+          callback = self.subscription_callback_map[typeof][subscriptions[path]["callback"]]
+          config = subscriptions[path]["config"]
+          subscription = WidgetSubscriptionCallback(
+            callback,
             widget,
-            signal,
-            fields["signals"][signal]
+            config
+          )
+          comms.subscribe(path, subscription.callback)
+          self.callback_list.append(subscription)
+
+      if "insert" in fields:
+        for insert in fields["insert"]:
+          self._insert_widget(
+            comms,
+            widget,
+            typeof,
+            insert["widget"],
+            insert["settings"],
+            insert["subscriptions"]
           )
 
+      if "signals" in fields:
+        for signal in fields["signals"].keys():
+          if isinstance(fields["signals"][signal], list) == False:
+            fields["signals"][signal] = [fields["signals"][signal]] 
+
+          for items in fields["signals"][signal]:
+            if isinstance(items, list) == False:
+              items = [items]
+            
+            for item in items:
+              self._register_signal(
+                typeof,
+                widget,
+                signal,
+                item
+              )
+
+    except Exception as e:
+      print("Widget interpretation failure\n")
+      debug.print_exception(e)
 
   def _register_signal(self, typeof, widget, signal, fields):
     callback_factory = self.signal_callback_factory_map[fields["action"]]
@@ -238,7 +251,8 @@ class MainWindow(QtWidgets.QMainWindow):
     set_callback = SetCallback(
       self._command_queue_place,
       path,
-      payload_callbacks
+      payload_callbacks,
+      self.key_value_map
     )
     self.callback_list.append(set_callback)
     return set_callback.callback

@@ -90,7 +90,21 @@
           "action" : "set", "path": "control/disable", "args": [ true ]
         }
       }
-    }    
+    },
+    "PushButton_remoteLogStart": {
+      "signals": {
+        "pressed": { 
+          "action" : "set", "path": "rlog/active", "args": [ true ]
+        }
+      }
+    },
+    "PushButton_remoteLogStop": {
+      "signals": {
+        "pressed": { 
+          "action" : "set", "path": "rlog/active", "args": [ false ]
+        }
+      }
+    }   
   },
   "QSlider": {
     "Slider_manualSpeed": {
@@ -167,6 +181,15 @@
       "input": false,
       "subscriptions": { 
         "imu/magne/z": { "callback": "set", "config": ["{:0.3f}"]} 
+      }
+    },
+    "LineEdit_logSuffix": {
+      "input": true,
+      "default": { "key": "rlog/suffix" },
+      "signals": {
+        "editingFinished": [
+          { "action" : "map", "key": "rlog/suffix", "multiplier": null }
+        ]
       }
     }
   },

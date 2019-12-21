@@ -6,7 +6,8 @@
     },
     "tcp": {
       "address": "192.168.1.13",
-      "port": 11337
+      "command-port": 11337,
+      "log-port": 11338
     }
   }
 }
