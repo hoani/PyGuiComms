@@ -1,3 +1,5 @@
+[] Add basic json load tests for config files to ensure they are still readable
+
 [] Add default config file for default IP addresses etc
 [] Investigate using TOML as a config format
 [] Implement a logger

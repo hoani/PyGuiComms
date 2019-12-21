@@ -183,13 +183,24 @@
         "imu/magne/z": { "callback": "set", "config": ["{:0.3f}"]} 
       }
     },
+    "LineEdit_ahrsPitch": {
+      "input": false,
+      "subscriptions": { 
+        "ahrs/angle/pitch": { "callback": "set", "config": ["{:0.3f}"]} 
+      }
+    },
+    "LineEdit_ahrsYaw": {
+      "input": false,
+      "subscriptions": { 
+        "ahrs/angle/yaw":   { "callback": "set", "config": ["{:0.3f}"]} 
+      }
+    },
     "LineEdit_logSuffix": {
       "input": true,
       "default": { "key": "rlog/suffix" },
       "signals": {
-        "editingFinished": [
+        "editingFinished":
           { "action" : "map", "key": "rlog/suffix", "multiplier": null }
-        ]
       }
     }
   },
