@@ -44,9 +44,10 @@
         "duration": { "type": "float", "set": true, "bounds": [0.0, 1.0]}
       },
       "automatic": {
-        "speed": { "type": "float", "set": true, "bounds": [0.0, 1.0] }
+        "speed":  { "type": "float", "set": true, "bounds": [0.0, 1.0] },
+        "enable": { "type": "bool", "set": true }
       },
-      "pid": {
+      "pendulum": {
         "gains": {
           "kp": { "type": "float", "set": true },
           "ki": { "type": "float", "set": true },
@@ -55,7 +56,9 @@
         "setpoint": {
           "value": {"type": "float", "set": true },
           "profile": { "type": ["flat", "square", "triangle"], "set": true }
-        }
+        },
+        "limit":  {"type": "float", "set": true },
+        "enable": {"type": "bool", "set": true }
       }
     },
     "imu": { "_addr": "1200",

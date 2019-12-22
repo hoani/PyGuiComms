@@ -79,7 +79,8 @@
       "signals": {
         "pressed": { 
           "action" : "set", "path": "control/automatic", "args": [
-            { "key": "control/automatic/speed", "default": 0.5 }
+            { "key": "control/automatic/speed", "default": 0.5 },
+            true
            ]
         }
       }
