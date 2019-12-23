@@ -9,75 +9,75 @@
   "QPushButton": {
     "PushButton_controlManualFW": {
       "signals": {
-        "pressed": { 
-          "repeat": { "rate": 0.5, "stop": "released" }, 
-          "action" : "set", 
-          "path": "control/manual", 
+        "pressed": {
+          "repeat": { "rate": 0.5, "stop": "released" },
+          "action" : "set",
+          "path": "control/manual",
           "args": [
             "FW",
             { "key": "control/manual/speed", "default": 0.5 },
             { "key": "control/manual/duration", "default": 0.5 }
           ]
         },
-        "released": { 
+        "released": {
           "action" : "set", "path": "control/disable", "args": [ true ]
         }
       }
     },
     "PushButton_controlManualBW": {
       "signals": {
-        "pressed": { 
-          "repeat": { "rate": 0.5, "stop": "released" }, 
-          "action" : "set", 
-          "path": "control/manual", 
+        "pressed": {
+          "repeat": { "rate": 0.5, "stop": "released" },
+          "action" : "set",
+          "path": "control/manual",
           "args": [
             "BW",
             { "key": "control/manual/speed", "default": 0.5 },
             { "key": "control/manual/duration", "default": 0.5 }
           ]
         },
-        "released": { 
+        "released": {
           "action" : "set", "path": "control/disable", "args": [ true ]
         }
       }
     },
     "PushButton_controlManualLT": {
       "signals": {
-        "pressed": { 
-          "repeat": { "rate": 0.5, "stop": "released" }, 
-          "action" : "set", 
-          "path": "control/manual", 
+        "pressed": {
+          "repeat": { "rate": 0.5, "stop": "released" },
+          "action" : "set",
+          "path": "control/manual",
           "args": [
             "LT",
             { "key": "control/manual/speed", "default": 0.5 },
             { "key": "control/manual/duration", "default": 0.5 }
           ]
         },
-        "released": { 
+        "released": {
           "action" : "set", "path": "control/disable", "args": [ true ]
         }
       }
     },
     "PushButton_controlManualRT": {
       "signals": {
-        "pressed": { 
-          "repeat": { "rate": 0.5, "stop": "released" }, 
+        "pressed": {
+          "repeat": { "rate": 0.5, "stop": "released" },
           "action" : "set",
-          "path": "control/manual", 
+          "path": "control/manual",
           "args": [
             "RT",
             { "key": "control/manual/speed", "default": 0.5 },
             { "key": "control/manual/duration", "default": 0.5 }
           ]
         },
-        "released": { 
+        "released": {
           "action" : "set", "path": "control/disable", "args": [ true ]
         }
       }
     },
     "PushButton_controlAutomatic": {
       "signals": {
-        "pressed": { 
+        "pressed": {
           "action" : "set", "path": "control/automatic", "args": [
             { "key": "control/automatic/speed", "default": 0.5 },
             true
@@ -87,25 +87,54 @@
     },
     "PushButton_controlDisable": {
       "signals": {
-        "pressed": { 
+        "pressed": {
           "action" : "set", "path": "control/disable", "args": [ true ]
         }
       }
     },
     "PushButton_remoteLogStart": {
       "signals": {
-        "pressed": { 
+        "pressed": {
           "action" : "set", "path": "rlog/active", "args": [ true ]
         }
       }
     },
     "PushButton_remoteLogStop": {
       "signals": {
-        "pressed": { 
+        "pressed": {
           "action" : "set", "path": "rlog/active", "args": [ false ]
         }
       }
-    }   
+    },
+    "PushButton_pendulumEnable": {
+      "signals": {
+        "pressed": {
+          "action" : "set", "path": "control/pendulum/enable", "args": [ true ]
+        }
+      }
+    },
+    "PushButton_pendulumDisable": {
+      "signals": {
+        "pressed": {
+          "action" : "set", "path": "control/pendulum/enable", "args": [ false ]
+        }
+      }
+    },
+    "PushButton_pendulumUpdate": {
+      "signals": {
+        "pressed": {
+          "action" : "set",
+          "path": "control/pendulum",
+          "args": [
+            { "key": "control/pendulum/gains/kp", "default": 0.0 },
+            { "key": "control/pendulum/gains/ki", "default": 0.0 },
+            { "key": "control/pendulum/gains/kd", "default": 0.0 },
+            { "key": "control/pendulum/setpoint", "default": 0.0 },
+            { "key": "control/pendulum/limit",    "default": 5.0 }
+          ]
+        }
+      }
+    }
   },
   "QSlider": {
     "Slider_manualSpeed": {
@@ -118,82 +147,82 @@
     }
   },
   "QLineEdit": {
-    "LineEdit_cpuUse": { 
+    "LineEdit_cpuUse": {
       "input": false,
-      "subscriptions": { 
-        "health/os/cpuse": { "callback": "set", "config": ["{:0.3f}"]} 
+      "subscriptions": {
+        "health/os/cpuse": { "callback": "set", "config": ["{:0.3f}"]}
       }
     },
     "LineEdit_battV": {
       "input": false,
-      "subscriptions": { 
-        "health/batt/v": { "callback": "set", "config": ["{:0.3f}"]} 
+      "subscriptions": {
+        "health/batt/v": { "callback": "set", "config": ["{:0.3f}"]}
       }
     },
     "LineEdit_accelX": {
       "input": false,
-      "subscriptions": { 
-        "imu/accel/x": { "callback": "set", "config": ["{:0.3f}"]} 
+      "subscriptions": {
+        "imu/accel/x": { "callback": "set", "config": ["{:0.3f}"]}
       }
     },
     "LineEdit_accelY": {
       "input": false,
-      "subscriptions": { 
-        "imu/accel/y": { "callback": "set", "config": ["{:0.3f}"]} 
+      "subscriptions": {
+        "imu/accel/y": { "callback": "set", "config": ["{:0.3f}"]}
       }
     },
     "LineEdit_accelZ": {
       "input": false,
-      "subscriptions": { 
-        "imu/accel/z": { "callback": "set", "config": ["{:0.3f}"]} 
+      "subscriptions": {
+        "imu/accel/z": { "callback": "set", "config": ["{:0.3f}"]}
       }
     },
     "LineEdit_gyrosX": {
       "input": false,
-      "subscriptions": { 
-        "imu/gyros/x": { "callback": "set", "config": ["{:0.3f}"]} 
+      "subscriptions": {
+        "imu/gyros/x": { "callback": "set", "config": ["{:0.3f}"]}
       }
     },
     "LineEdit_gyrosY": {
       "input": false,
-      "subscriptions": { 
-        "imu/gyros/y": { "callback": "set", "config": ["{:0.3f}"]} 
+      "subscriptions": {
+        "imu/gyros/y": { "callback": "set", "config": ["{:0.3f}"]}
       }
     },
     "LineEdit_gyrosZ": {
       "input": false,
-      "subscriptions": { 
-        "imu/gyros/z": { "callback": "set", "config": ["{:0.3f}"]} 
+      "subscriptions": {
+        "imu/gyros/z": { "callback": "set", "config": ["{:0.3f}"]}
       }
     },
     "LineEdit_magneX": {
       "input": false,
-      "subscriptions": { 
-        "imu/magne/x": { "callback": "set", "config": ["{:0.3f}"]} 
+      "subscriptions": {
+        "imu/magne/x": { "callback": "set", "config": ["{:0.3f}"]}
       }
     },
     "LineEdit_magneY": {
       "input": false,
-      "subscriptions": { 
-        "imu/magne/y": { "callback": "set", "config": ["{:0.3f}"]} 
+      "subscriptions": {
+        "imu/magne/y": { "callback": "set", "config": ["{:0.3f}"]}
       }
     },
     "LineEdit_magneZ": {
       "input": false,
-      "subscriptions": { 
-        "imu/magne/z": { "callback": "set", "config": ["{:0.3f}"]} 
+      "subscriptions": {
+        "imu/magne/z": { "callback": "set", "config": ["{:0.3f}"]}
       }
     },
     "LineEdit_ahrsPitch": {
       "input": false,
-      "subscriptions": { 
-        "ahrs/angle/pitch": { "callback": "set", "config": ["{:0.3f}"]} 
+      "subscriptions": {
+        "ahrs/angle/pitch": { "callback": "set", "config": ["{:0.3f}"]}
       }
     },
     "LineEdit_ahrsYaw": {
       "input": false,
-      "subscriptions": { 
-        "ahrs/angle/yaw":   { "callback": "set", "config": ["{:0.3f}"]} 
+      "subscriptions": {
+        "ahrs/angle/yaw":   { "callback": "set", "config": ["{:0.3f}"]}
       }
     },
     "LineEdit_logSuffix": {
@@ -202,6 +231,46 @@
       "signals": {
         "editingFinished":
           { "action" : "map", "key": "rlog/suffix", "multiplier": null }
+      }
+    },
+    "LineEdit_pendulumKp": {
+      "input": true,
+      "default": { "key": "control/pendulum/gains/kp" },
+      "signals": {
+        "editingFinished":
+          { "action" : "map", "key": "control/pendulum/gains/kp", "multiplier": null }
+      }
+    },
+    "LineEdit_pendulumKi": {
+      "input": true,
+      "default": { "key": "control/pendulum/gains/ki" },
+      "signals": {
+        "editingFinished":
+          { "action" : "map", "key": "control/pendulum/gains/ki", "multiplier": null }
+      }
+    },
+    "LineEdit_pendulumKd": {
+      "input": true,
+      "default": { "key": "control/pendulum/gains/kd" },
+      "signals": {
+        "editingFinished":
+          { "action" : "map", "key": "control/pendulum/gains/kd", "multiplier": null }
+      }
+    },
+    "LineEdit_pendulumSetpoint": {
+      "input": true,
+      "default": { "key": "control/pendulum/setpoint/value" },
+      "signals": {
+        "editingFinished":
+          { "action" : "map", "key": "control/pendulum/setpoint/value", "multiplier": null }
+      }
+    },
+    "LineEdit_pendulumLimit": {
+      "input": true,
+      "default": { "key": "control/pendulum/limit" },
+      "signals": {
+        "editingFinished":
+          { "action" : "map", "key": "control/pendulum/limit", "multiplier": null }
       }
     }
   },
@@ -213,21 +282,21 @@
           "settings": { "title": "Accelerometers (m.s-2)" },
           "subscriptions": {
             "imu/accel": { "callback": "setVec3", "config": [] }
-          } 
+          }
         },
         {
           "widget": "plotVec3",
           "settings": { "title": "Gyroscopes (deg.s-1)" },
-          "subscriptions": { 
+          "subscriptions": {
             "imu/gyros": { "callback": "setVec3", "config": [] }
-          } 
+          }
         },
         {
           "widget": "plotVec3",
           "settings": { "title": "Magnetometers (mT)" },
           "subscriptions": {
-            "imu/magne": { "callback": "setVec3", "config": [] } 
-          } 
+            "imu/magne": { "callback": "setVec3", "config": [] }
+          }
         }
       ]
     },
@@ -238,16 +307,16 @@
           "settings": { "title": "Cpu Usage (%)" },
           "subscriptions": {
             "health/batt/v": { "callback": "setSingle", "config": [] }
-          } 
+          }
         },
         {
           "widget": "plotSingle",
           "settings": { "title": "Gyroscopes (deg.s-1)" },
-          "subscriptions": { 
+          "subscriptions": {
             "health/os/cpuse": { "callback": "setSingle", "config": [] }
-          } 
+          }
         }
       ]
-    }   
+    }
   }
 }

@@ -53,10 +53,7 @@
           "ki": { "type": "float", "set": true },
           "kd": { "type": "float", "set": true }
         },
-        "setpoint": {
-          "value": {"type": "float", "set": true },
-          "profile": { "type": ["flat", "square", "triangle"], "set": true }
-        },
+        "setpoint": {"type": "float", "set": true },
         "limit":  {"type": "float", "set": true },
         "enable": {"type": "bool", "set": true }
       }
