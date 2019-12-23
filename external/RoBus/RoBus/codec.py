@@ -169,7 +169,6 @@ def encode_types(item, typeof):
     item = check_type(item, 0.0, typeof, float)
     return ''.join(format(x, '02x') for x in struct.pack('>d', item))
   elif isinstance(typeof, list):
-    item = check_type(item, [], typeof, list)
     if item in typeof:
       x = typeof.index(item)
       return "{:02x}".format(clamp(x, 0x00, 0xff))
