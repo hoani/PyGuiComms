@@ -120,36 +120,56 @@ def extract_path_settable_pairs(root, path):
 def clamp(value, min_value, max_value):
   return max(min_value, min(value, max_value))
 
+def check_type(item, default, typeof, check):
+  try:
+    return check(item)
+  except:
+    print("error, ({}) is not  a {}".format(item, typeof) )
+    return default
+
 def encode_types(item, typeof):
   if typeof == "u8":
+    item = check_type(item, 0x00, typeof, int)
     return "{:02x}".format(clamp(item, 0x00, 0xff))
   elif typeof == "u16":
+    item = check_type(item, 0x00, typeof, int)
     return "{:04x}".format(clamp(item, 0x0000, 0xffff))
   elif typeof == "u32":
+    item = check_type(item, 0x00, typeof, int)
     return "{:08x}".format(clamp(item, 0x00000000, 0xffffffff))
   elif typeof == "u64":
+    item = check_type(item, 0x00, typeof, int)
     return "{:016x}".format(clamp(item, 0x0000000000000000, 0xffffffffffffffff))
   if typeof == "i8":
+    item = check_type(item, 0x00, typeof, int)
     item = clamp(item, -0x80, 0x7F)
     return "{:02x}".format(item + 0x100 if item < 0 else item)
   elif typeof == "i16":
+    item = check_type(item, 0x00, typeof, int)
     item = clamp(item, -0x8000, 0x7FFF)
     return "{:04x}".format(item + 0x10000 if item < 0 else item)
   elif typeof == "i32":
+    item = check_type(item, 0x00, typeof, int)
     item = clamp(item, -0x80000000, 0x7FFFFFFF)
     return "{:08x}".format(item + 0x100000000 if item < 0 else item)
   elif typeof == "i64":
+    item = check_type(item, 0x00, typeof, int)
     item = clamp(item, -0x8000000000000000, 0x7FFFFFFFFFFFFFFF)
     return "{:016x}".format(item + 0x10000000000000000 if item < 0 else item)
   elif typeof == "string":
+    item = check_type(item, "", typeof, str)
     return item
   elif typeof == "bool":
+    item = check_type(item, False, typeof, bool)
     return "1" if item == True else "0"
   elif typeof == "float":
+    item = check_type(item, 0.0, typeof, float)
     return ''.join(format(x, '02x') for x in struct.pack('>f', item))
   elif typeof == "double":
+    item = check_type(item, 0.0, typeof, float)
     return ''.join(format(x, '02x') for x in struct.pack('>d', item))
   elif isinstance(typeof, list):
+    item = check_type(item, [], typeof, list)
     if item in typeof:
       x = typeof.index(item)
       return "{:02x}".format(clamp(x, 0x00, 0xff))

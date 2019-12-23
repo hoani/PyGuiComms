@@ -1,20 +1,23 @@
 [] Pendulum Control GUI
-    [] Configure protocol
-        [] Requires:
+    [X] Configure protocol
+        [X] Requires:
             - Start Pendulum Control/Stop pendulum control
             - Limits
 
     [] Create GUI:
-        [] Control commands
-        [] Remote logging
-        [] Terminal
-        [] AHRS feedback
+        [X] Control commands
+        [X] Remote logging
+        [X] Terminal
+        [X] AHRS feedback
+        [] AHRS plotting
+        [] Add limit
     [] Add control commands to protocol
-        [] Settable gains
-        [] Enable control
-        [] Open loop control start/stop
+        [X] Settable gains
+        [X] Enable control
+        [X] Open loop control start/stop
+        [] Add limit
+[X] Add basic json load tests for config files to ensure they are still readable
 
-[] Add basic json load tests for config files to ensure they are still readable
 [] Big Project - Gui Launcher As Proxy
 [] Add servo UI
     [] Investigate new UI elements for showing angle etc

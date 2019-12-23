@@ -43,7 +43,11 @@ class MapSetterCallback:
       self.callback()
 
   def callback(self):
-    value = self._value_callback() * self._multiplier
+    value = self._value_callback()
+    
+    if self._multiplier != None:
+      value = value * self._multiplier
+
     self._map[self._key] = value
 
 

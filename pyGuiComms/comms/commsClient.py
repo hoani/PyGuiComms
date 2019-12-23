@@ -54,6 +54,7 @@ class CommsClient():
           path, payload = self.command_queue.get_nowait()
 
           p = packet.Packet("set", path, payload)
+          print(payload)
           encoded = self.codec.encode(p)
           if encoded != '':
             self.client.send(encoded)

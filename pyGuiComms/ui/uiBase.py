@@ -92,6 +92,9 @@ class MainWindow(QtWidgets.QMainWindow):
       },
       QtWidgets.QSlider: {
         "released": self._setup_slider_released
+      },
+      QtWidgets.QLineEdit: {
+        "editingFinished": self._setup_line_edit_finished
       }
     }
 
@@ -207,31 +210,42 @@ class MainWindow(QtWidgets.QMainWindow):
               )
 
     except Exception as e:
+      print()
       print("Widget interpretation failure\n")
       debug.print_exception(e)
 
   def _register_signal(self, typeof, widget, signal, fields):
-    callback_factory = self.signal_callback_factory_map[fields["action"]]
-    callback = callback_factory(widget, fields)
-    setup = self.widget_setup_map[typeof][signal]
+    try:
+      callback_factory = self.signal_callback_factory_map[fields["action"]]
+      callback = callback_factory(typeof, widget, fields)
+      setup = self.widget_setup_map[typeof][signal]
 
-    if "repeat" in fields:
-      params = fields["repeat"]
-      period_ms = params["rate"] * 1000
+      if "repeat" in fields:
+        params = fields["repeat"]
+        period_ms = params["rate"] * 1000
 
-      stop_signal = params["stop"]
-      stop_setup = self.widget_setup_map[typeof][stop_signal]
+        stop_signal = params["stop"]
+        stop_setup = self.widget_setup_map[typeof][stop_signal]
 
-      periodic = cbc.PeriodicCallback(period_ms, callback, self.add_upkeep)
-      self.callback_list.append(periodic)
+        periodic = cbc.PeriodicCallback(period_ms, callback, self.add_upkeep)
+        self.callback_list.append(periodic)
 
-      setup(widget, periodic.start)
-      stop_setup(widget, periodic.stop)
-    else:
-      setup(widget, callback)
+        setup(widget, periodic.start)
+        stop_setup(widget, periodic.stop)
+      else:
+        setup(widget, callback)
+
+    except Exception as e:
+      print()
+      print("Widget registration failure\n")
+      print(typeof)
+      print(widget)
+      print(signal)
+      print(fields)
+      debug.print_exception(e)
 
 
-  def _set_callback_factory(self, widget, fields):
+  def _set_callback_factory(self, typeof, widget, fields):
     path = fields["path"]
     payload_callbacks = []
     for arg in fields["args"]:
@@ -262,19 +276,33 @@ class MainWindow(QtWidgets.QMainWindow):
     self.command_queue.put((path, payload))
 
 
-  def _map_callback_factory(self, widget, fields):
-    key = fields["key"]
-    multiplier = fields["multiplier"]
+  def _map_callback_factory(self, typeof, widget, fields):
+    try:
+      key = fields["key"]
+      multiplier = fields["multiplier"]
 
-    map_callback = cbc.MapSetterCallback(
-      self.key_value_map,
-      key,
-      widget.value,
-      multiplier
-    )
+      
+      if typeof == QtWidgets.QLineEdit:
+        cb = widget.text
+      else:
+        cb = widget.value
 
-    self.callback_list.append(map_callback)
-    return map_callback.callback
+      map_callback = cbc.MapSetterCallback(
+        self.key_value_map,
+        key,
+        cb,
+        multiplier
+      )
+
+      self.callback_list.append(map_callback)
+      return map_callback.callback
+    except Exception as e:
+      print()
+      print("Map callback factory failure")
+      print(widget)
+      print(fields)
+      debug.print_exception(e)
+      return None
 
   def _setup_pressed(self, widget, callback):
     widget.pressed.connect(callback)
@@ -284,6 +312,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
   def _setup_slider_released(self, widget, callback):
     widget.sliderReleased.connect(callback)
+
+  def _setup_line_edit_finished(self, widget, callback):
+    widget.editingFinished.connect(callback)
 
 
   def _get_timestamp(self):
