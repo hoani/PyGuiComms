@@ -36,6 +36,10 @@
         "cpuse": { "type": "float", "set": false }
       }
     },
+    "motor": { "_addr": "1120",
+      "left": {"type": "float", "set": false},
+      "right": {"type": "float", "set": false}
+    },
     "control": { "_addr": "8000",
       "disable": { "type": "bool", "set": true },
       "manual": {

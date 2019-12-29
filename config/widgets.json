@@ -304,16 +304,45 @@
       "insert": [
         {
           "widget": "plotSingle",
-          "settings": { "title": "Cpu Usage (%)" },
+          "settings": { "title": "Battery Voltage" },
           "subscriptions": {
             "health/batt/v": { "callback": "setSingle", "config": [] }
           }
         },
         {
           "widget": "plotSingle",
-          "settings": { "title": "Gyroscopes (deg.s-1)" },
+          "settings": { "title": "Cpu Usage (%)" },
           "subscriptions": {
             "health/os/cpuse": { "callback": "setSingle", "config": [] }
+          }
+        }
+      ]
+    },
+    "Box_motors":{
+      "insert": [
+        {
+          "widget": "plotDual",
+          "settings": { "title": "Motors (%)" },
+          "subscriptions": {
+            "motor": { "callback": "setDual", "config": [], "multiplier": 100.0 }
+          }
+        }
+      ]
+    },
+    "Box_ahrs":{
+      "insert": [
+        {
+          "widget": "plotSingle",
+          "settings": { "title": "Pitch (deg)" },
+          "subscriptions": {
+            "ahrs/angle/pitch": { "callback": "setSingle", "config": [] }
+          }
+        },
+        {
+          "widget": "plotSingle",
+          "settings": { "title": "Yaw (deg)" },
+          "subscriptions": {
+            "ahrs/angle/yaw": { "callback": "setSingle", "config": [] }
           }
         }
       ]

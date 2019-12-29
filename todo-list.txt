@@ -17,6 +17,12 @@
         [X] Open loop control start/stop
         [X] Add limit
         [] Implement default values for value_map
+
+    [] New features:
+        [] Get AHRS dials functional
+        [] Add progress bars (with multipliers)
+        [] Add dual plots for plotting motor output
+        
 [X] Add basic json load tests for config files to ensure they are still readable
 
 [] Big Project - Gui Launcher As Proxy
