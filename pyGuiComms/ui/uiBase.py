@@ -82,6 +82,9 @@ class MainWindow(QtWidgets.QMainWindow):
       QtWidgets.QBoxLayout: {
         "setVec3": self.update_plot_vec3,
         "setSingle": self.update_plot_single,
+      },
+      QtWidgets.QDial: {
+        "set": self.update_dial
       }
     }
 
@@ -151,12 +154,26 @@ class MainWindow(QtWidgets.QMainWindow):
       item.update_data(t, vect.Vec3(values))
 
 
+
   def update_plot_single(self, item, values=0, config=[]):
     if item == None:
       return
     else:
       t = datetime.datetime.now().timestamp() - self.t_start
       item.update_data(t, values)
+
+
+  def update_dial(self, item, values=[0.0], config=[1.0]):
+    if len(config) > 0:
+      multiplier = config[0]
+    else:
+      mulitplier = 1.0
+
+    value = values[0] * multiplier
+    if item == None:
+      return
+    else:
+      item.setValue(value)
 
 
   def _load_ui_widget(self, comms, typeof, widget, fields):

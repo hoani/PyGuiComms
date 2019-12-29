@@ -8,7 +8,7 @@
 # Eventually a translation object will subscribe to comms client and will take application subscribers.
 
 import sys, os
-from pyGuiComms.utilities import vect
+from pyGuiComms.utilities import vect, debug
 import queue
 from external.RoBus.RoBus import codec, packet
 
@@ -44,10 +44,7 @@ class CommsClient():
       except OSError:
         pass
       except Exception as e:
-        exc_type, exc_obj, exc_tb = sys.exc_info()
-        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-        print(exc_type,',', fname,', ln', exc_tb.tb_lineno)
-        print(e)
+        debug.print_exception(e)
 
       while True:
         try:
@@ -62,10 +59,7 @@ class CommsClient():
         except queue.Empty:
           break
         except Exception as e:
-          exc_type, exc_obj, exc_tb = sys.exc_info()
-          fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-          print(exc_type,',', fname,', ln', exc_tb.tb_lineno)
-          print(e)
+          debug.print_exception(e)
 
   def _client_send(self, data):
     if self.client == None:
@@ -80,21 +74,29 @@ class CommsClient():
       self.subscribers[item] = [callback]
 
   def _publish(self, unpacked):
-    for subscription in self.subscribers.keys():
-      data = []
-      for item in unpacked.keys():
-        if subscription in item:
-          data.append(unpacked[item]["value"])
+    try:
+      for subscription in self.subscribers.keys():
+        data = []
+        for item in unpacked.keys():
+          if subscription in item:
+            data.append(unpacked[item]["value"])
 
-      if len(data) > 0:
-        for callback in self.subscribers[subscription]:
-          callback(data)
+        if len(data) > 0:
+          for callback in self.subscribers[subscription]:
+            callback(data)
+            
+    except Exception as e:
+      debug.print_exception(e)
 
   def _process_packet(self, data):
-    data = self.remainder + data
-    
-    (self.remainder, packets) = self.codec.decode(data)
-    for p in packets:
-      if p.category == "pub":
-        unpacked = p.unpack(self.codec)
-        self._publish(unpacked)
+    try:
+      data = self.remainder + data
+      
+      (self.remainder, packets) = self.codec.decode(data)
+      for p in packets:
+        if p.category == "pub":
+          unpacked = p.unpack(self.codec)
+          self._publish(unpacked)
+    except Exception as e:
+      debug.print_exception(e)
+

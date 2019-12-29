@@ -146,6 +146,18 @@
       }
     }
   },
+  "QDial": {
+    "Dial_ahrsPitch": {
+      "subscriptions": {
+        "ahrs/angle/pitch": { "callback": "set", "config": [1.0]}
+      }
+    },
+    "Dial_ahrsYaw": {
+      "subscriptions": {
+        "ahrs/angle/yaw": { "callback": "set", "config": [1.0]}
+      }
+    }
+  },
   "QLineEdit": {
     "LineEdit_cpuUse": {
       "input": false,
@@ -324,7 +336,7 @@
           "widget": "plotDual",
           "settings": { "title": "Motors (%)" },
           "subscriptions": {
-            "motor": { "callback": "setDual", "config": [], "multiplier": 100.0 }
+            "motor": { "callback": "setDual", "config": [100.0, 100.0] }
           }
         }
       ]
