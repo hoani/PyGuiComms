@@ -398,28 +398,28 @@
                 <item>
                  <layout class="QHBoxLayout" name="horizontalLayout">
                   <item>
-                   <widget class="QPushButton" name="pushButton_ahrsStill">
+                   <widget class="QPushButton" name="PushButton_ahrsStill">
                     <property name="text">
                      <string>still</string>
                     </property>
                    </widget>
                   </item>
                   <item>
-                   <widget class="QPushButton" name="pushButton_ahrsStill_4">
+                   <widget class="QPushButton" name="PushButton_ahrsSmart">
                     <property name="text">
                      <string>smart</string>
                     </property>
                    </widget>
                   </item>
                   <item>
-                   <widget class="QPushButton" name="pushButton_ahrsStill_3">
+                   <widget class="QPushButton" name="PushButton_ahrsCalibrate">
                     <property name="text">
                      <string>calibrate</string>
                     </property>
                    </widget>
                   </item>
                   <item>
-                   <widget class="QPushButton" name="pushButton_ahrsStill_2">
+                   <widget class="QPushButton" name="PushButton_ahrsDynamic">
                     <property name="text">
                      <string>dynamic</string>
                     </property>

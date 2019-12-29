@@ -134,6 +134,34 @@
           ]
         }
       }
+    },
+    "PushButton_ahrsCalibrate": {
+      "signals": {
+        "pressed": {
+          "action" : "set", "path": "ahrs/mode/cal", "args": [ true ]
+        }
+      }
+    },
+    "PushButton_ahrsStill": {
+      "signals": {
+        "pressed": {
+          "action" : "set", "path": "ahrs/mode/still", "args": [ true ]
+        }
+      }
+    },
+    "PushButton_ahrsDynamic": {
+      "signals": {
+        "pressed": {
+          "action" : "set", "path": "ahrs/mode/dynamic", "args": [ true ]
+        }
+      }
+    },
+    "PushButton_ahrsSmart": {
+      "signals": {
+        "pressed": {
+          "action" : "set", "path": "ahrs/mode/smart", "args": [ true ]
+        }
+      }
     }
   },
   "QSlider": {

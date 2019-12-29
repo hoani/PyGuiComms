@@ -16,13 +16,13 @@
         [X] Enable control
         [X] Open loop control start/stop
         [X] Add limit
-        [] Implement default values for value_map
+        [] Implement default values for value_map or remove default values in widget settings
 
     [X] New features:
         [X] Get AHRS dials functional
         [X] Add progress bars (with multipliers)
         [X] Add dual plots for plotting motor output
-        [] Add AHRS Commands to buttons
+        [X] Add AHRS Commands to buttons
 
 [X] Add basic json load tests for config files to ensure they are still readable
 
