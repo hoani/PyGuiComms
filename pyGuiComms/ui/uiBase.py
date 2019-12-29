@@ -81,6 +81,7 @@ class MainWindow(QtWidgets.QMainWindow):
       },
       QtWidgets.QBoxLayout: {
         "setVec3": self.update_plot_vec3,
+        "setDual": self.update_plot_dual,
         "setSingle": self.update_plot_single,
       },
       QtWidgets.QDial: {
@@ -156,6 +157,13 @@ class MainWindow(QtWidgets.QMainWindow):
       t = datetime.datetime.now().timestamp() - self.t_start
       item.update_data(t, vect.Vec3(values))
 
+
+  def update_plot_dual(self, item, values=[0, 0], config=[]):
+    if item == None:
+      return
+    else:
+      t = datetime.datetime.now().timestamp() - self.t_start
+      item.update_data(t, values)
 
 
   def update_plot_single(self, item, values=0, config=[]):
@@ -345,6 +353,11 @@ class MainWindow(QtWidgets.QMainWindow):
     if widget_str == "plotVec3":
       setting_title = settings["title"]
       new_widget = plotCanvas.XyzPlotCanvas(title=setting_title)
+      parent_widget.addWidget(new_widget)
+
+    if widget_str == "plotDual":
+      setting_title = settings["title"]
+      new_widget = plotCanvas.DualPlotCanvas(title=setting_title)
       parent_widget.addWidget(new_widget)
 
     if widget_str == "plotSingle":

@@ -86,3 +86,12 @@ class SinglePlotCanvas(PlotCanvas):
 
   def update_data(self, t, data):
     super().update_data(t, [data])
+
+
+class DualPlotCanvas(PlotCanvas):
+  def __init__(self, max_data_points = 100, title = None, parent = None, width = 5, height = 4, dpi = 100 ):
+    super().__init__(['r', 'b'], max_data_points, title, parent, width, height, dpi)
+
+  def update_data(self, t, data):
+    if len(data) == 2:
+      super().update_data(t, data)

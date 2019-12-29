@@ -4,12 +4,12 @@
             - Start Pendulum Control/Stop pendulum control
             - Limits
 
-    [] Create GUI:
+    [X] Create GUI:
         [X] Control commands
         [X] Remote logging
         [X] Terminal
         [X] AHRS feedback
-        [] AHRS plotting
+        [X] AHRS plotting
         [X] Add limit
     [] Add control commands to protocol
         [X] Settable gains
@@ -18,10 +18,11 @@
         [X] Add limit
         [] Implement default values for value_map
 
-    [] New features:
+    [X] New features:
         [X] Get AHRS dials functional
         [X] Add progress bars (with multipliers)
-        [] Add dual plots for plotting motor output
+        [X] Add dual plots for plotting motor output
+        [] Add AHRS Commands to buttons
 
 [X] Add basic json load tests for config files to ensure they are still readable
 
