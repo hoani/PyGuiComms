@@ -84,7 +84,10 @@ class MainWindow(QtWidgets.QMainWindow):
         "setSingle": self.update_plot_single,
       },
       QtWidgets.QDial: {
-        "set": self.update_dial
+        "set": self.update_valued_widget
+      },
+      QtWidgets.QProgressBar: {
+        "set": self.update_valued_widget
       }
     }
 
@@ -163,7 +166,7 @@ class MainWindow(QtWidgets.QMainWindow):
       item.update_data(t, values)
 
 
-  def update_dial(self, item, values=[0.0], config=[1.0]):
+  def update_valued_widget(self, item, values=[0.0], config=[1.0]):
     if len(config) > 0:
       multiplier = config[0]
     else:

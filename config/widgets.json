@@ -158,6 +158,28 @@
       }
     }
   },
+  "QProgressBar": {
+    "progressBar_motorLeft": {
+      "subscriptions": {
+        "motor/left": { "callback": "set", "config": [100.0]}
+      }
+    },
+    "progressBar_motorLeftInvert": {
+      "subscriptions": {
+        "motor/left": { "callback": "set", "config": [-100.0]}
+      }
+    },
+    "progressBar_motorRight": {
+      "subscriptions": {
+        "motor/right": { "callback": "set", "config": [100.0]}
+      }
+    },
+    "progressBar_motorRightInvert": {
+      "subscriptions": {
+        "motor/right": { "callback": "set", "config": [-100.0]}
+      }
+    }
+  },
   "QLineEdit": {
     "LineEdit_cpuUse": {
       "input": false,
