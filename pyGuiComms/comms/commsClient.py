@@ -10,7 +10,7 @@
 import sys, os
 from pyGuiComms.utilities import vect, debug
 import queue
-from external.RoBus.RoBus import codec, packet
+import leap
 
 class CommsClient():
   def __init__(self, protocol_file_path, client = None, my_queue = queue.Queue()):
@@ -19,7 +19,7 @@ class CommsClient():
     self.subscribers = dict()
     self.command_queue = my_queue
     self.remainder = b""
-    self.codec = codec.Codec(protocol_file_path)
+    self.codec = leap.Codec(protocol_file_path)
 
   def upkeep(self):
     if self.client == None:
@@ -50,7 +50,7 @@ class CommsClient():
         try:
           path, payload = self.command_queue.get_nowait()
 
-          p = packet.Packet("set", path, payload)
+          p = leap.Packet("set", path, payload)
           print(payload)
           encoded = self.codec.encode(p)
           if encoded != '':
@@ -79,7 +79,7 @@ class CommsClient():
         data = []
         for item in unpacked.keys():
           if subscription in item:
-            data.append(unpacked[item]["value"])
+            data.append(unpacked[item])
 
         if len(data) > 0:
           for callback in self.subscribers[subscription]:

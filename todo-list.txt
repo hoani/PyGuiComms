@@ -24,6 +24,9 @@
         [X] Add dual plots for plotting motor output
         [X] Add AHRS Commands to buttons
 
+[X] Integrate L3aP into project
+[] Remove RoBus from project
+
 [X] Add basic json load tests for config files to ensure they are still readable
 
 [] Big Project - Gui Launcher As Proxy
