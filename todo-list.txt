@@ -25,7 +25,7 @@
         [X] Add AHRS Commands to buttons
 
 [X] Integrate L3aP into project
-[] Remove RoBus from project
+[X] Remove RoBus from project
 
 [X] Add basic json load tests for config files to ensure they are still readable
 
