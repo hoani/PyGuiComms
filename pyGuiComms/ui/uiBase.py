@@ -67,7 +67,9 @@ class MainWindow(QtWidgets.QMainWindow):
     self.t_start = datetime.datetime.now().timestamp()
     self.command_queue = None
     self.upkeep_timer = []
-    self.callback_list = [] # This is used to avoid garbage collection
+    self.callback_list = []  # This is used to avoid garbage collection
+    # Registration for all widgets which need default values set
+    self.default_registry = []
     try:
         self.setStyleSheet(qdarkstyle.load_stylesheet_pyside2())
     except:
@@ -110,23 +112,37 @@ class MainWindow(QtWidgets.QMainWindow):
       "map" : self._map_callback_factory
     }
 
-  
   def get_data_map(self):
     return self.key_value_map
 
-
   def load(self, comms, widget_settings):
-    for element in widget_settings.keys():
-      try:
+    try:
+      for element in widget_settings.keys():
         typeof = eval("QtWidgets."+element)
         for name in widget_settings[element]:
           widget = self.findChild(typeof, name)
-          if widget != None:
+          if widget is not None:
             fields = widget_settings[element][name]
             self._load_ui_widget(comms, typeof, widget, fields)
-      except Exception as e:
-        print("Widget interpretation failure\n")
-        debug.print_exception(e)
+
+      for (typeof, widget, default) in self.default_registry:
+        if "key" in default:
+          value = self.key_value_map[default["key"]]
+        elif "value" in default:
+          value = default["value"]
+        else:
+          break # Unsupported
+
+        print(widget, value)
+        if typeof == QtWidgets.QLineEdit:
+          widget.setText(str(value))
+        else:
+          widget.setValue(value)
+
+      self.default_registry = []
+    except Exception as e:
+      print("Widget interpretation failure\n")
+      debug.print_exception(e)
 
 
   def set_command_queue(self, queue):
@@ -144,14 +160,14 @@ class MainWindow(QtWidgets.QMainWindow):
   def update_text_field(self, item, values=[0.0], config=["{:0.3f}"]):
     pattern = config[0]
     value = values[0]
-    if item == None:
+    if item is None:
       return
     else:
       item.setText(pattern.format(value))
 
 
   def update_plot_vec3(self, item, values=vect.Vec3(0,0,0), config=[]):
-    if item == None:
+    if item is None:
       return
     else:
       t = datetime.datetime.now().timestamp() - self.t_start
@@ -159,7 +175,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
   def update_plot_dual(self, item, values=[0, 0], config=[]):
-    if item == None:
+    if item is None:
       return
     else:
       t = datetime.datetime.now().timestamp() - self.t_start
@@ -167,7 +183,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
   def update_plot_single(self, item, values=0, config=[]):
-    if item == None:
+    if item is None:
       return
     else:
       t = datetime.datetime.now().timestamp() - self.t_start
@@ -189,6 +205,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
   def _load_ui_widget(self, comms, typeof, widget, fields):
     try:
+      if "default" in fields:
+        self.default_registry.append((typeof, widget, fields["default"]))
+
       if "stream" in fields:
         if fields["stream"]["target"] == "stdout":
           sys.stdout = extraConsole.extraConsole(widget, typeof.insertPlainText)
@@ -226,7 +245,7 @@ class MainWindow(QtWidgets.QMainWindow):
             fields["signals"][signal] = [fields["signals"][signal]] 
 
           for items in fields["signals"][signal]:
-            if isinstance(items, list) == False:
+            if isinstance(items, list) is False:
               items = [items]
             
             for item in items:
@@ -309,7 +328,6 @@ class MainWindow(QtWidgets.QMainWindow):
       key = fields["key"]
       multiplier = fields["multiplier"]
 
-      
       if typeof == QtWidgets.QLineEdit:
         cb = widget.text
       else:
