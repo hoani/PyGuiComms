@@ -1,13 +1,4 @@
-[] Add basic json load tests for config files to ensure they are still readable
-
-[] Add default config file for default IP addresses etc
-[] Investigate using TOML as a config format
-[] Implement a logger
-    [] Use a logger config to select and choose logged parameters
-    [] Use callback methods to subscribe to data
-    [] May need to implment a data model map which stores current values
 [] Big Project - Gui Launcher As Proxy
-[] Integrate infrared sensor
 [] Add servo UI
     [] Investigate new UI elements for showing angle etc
     [] Implement in a servo UI - should include drop down for selecting a servo
@@ -18,12 +9,4 @@
     [] Implement a GPIO UI
     [] Include the ability to change between Input to Output
     [] Input mode reads, output mode outputs
-[] Add file headers and descriptions
-    [] Research licence types and select license
-[] UI Base - make multi-parameter set commands set the key-value map (see line 55)
-[] Integrate webcam
-[] Handle disconnects from host better (tcp)
-[] Handle disconnects from host better (bt)
-
-Better snap tool
-Paste 2
+[] Add file headers and descriptions to MIT

@@ -1,7 +1,7 @@
 # Callback classes utility
 #
 # Provides a series of class methods with callback function
-
+from pyGuiComms.utilities.str2num import str2num
 
 class ValueCallback:
   def __init__(self, value):
@@ -25,6 +25,8 @@ class MapGetterCallback:
     self._map = my_map
     self._key = key
     self._default = default
+    if self._key not in self._map:
+      self._map[self._key] = default
 
   def callback(self):
     if self._key in self._map:
@@ -43,7 +45,11 @@ class MapSetterCallback:
       self.callback()
 
   def callback(self):
-    value = self._value_callback() * self._multiplier
+    value = str2num(self._value_callback())
+    
+    if self._multiplier is not None:
+      value = value * self._multiplier
+
     self._map[self._key] = value
 
 

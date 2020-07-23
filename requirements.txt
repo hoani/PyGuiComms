@@ -3,3 +3,4 @@ pyside2
 numpy
 matplotlib
 pybluez
+leap-protocol

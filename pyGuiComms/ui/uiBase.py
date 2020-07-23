@@ -67,7 +67,9 @@ class MainWindow(QtWidgets.QMainWindow):
     self.t_start = datetime.datetime.now().timestamp()
     self.command_queue = None
     self.upkeep_timer = []
-    self.callback_list = [] # This is used to avoid garbage collection
+    self.callback_list = []  # This is used to avoid garbage collection
+    # Registration for all widgets which need default values set
+    self.default_registry = []
     try:
         self.setStyleSheet(qdarkstyle.load_stylesheet_pyside2())
     except:
@@ -81,7 +83,14 @@ class MainWindow(QtWidgets.QMainWindow):
       },
       QtWidgets.QBoxLayout: {
         "setVec3": self.update_plot_vec3,
+        "setDual": self.update_plot_dual,
         "setSingle": self.update_plot_single,
+      },
+      QtWidgets.QDial: {
+        "set": self.update_valued_widget
+      },
+      QtWidgets.QProgressBar: {
+        "set": self.update_valued_widget
       }
     }
 
@@ -92,6 +101,9 @@ class MainWindow(QtWidgets.QMainWindow):
       },
       QtWidgets.QSlider: {
         "released": self._setup_slider_released
+      },
+      QtWidgets.QLineEdit: {
+        "editingFinished": self._setup_line_edit_finished
       }
     }
 
@@ -100,23 +112,36 @@ class MainWindow(QtWidgets.QMainWindow):
       "map" : self._map_callback_factory
     }
 
-  
   def get_data_map(self):
     return self.key_value_map
 
-
   def load(self, comms, widget_settings):
-    for element in widget_settings.keys():
-      try:
+    try:
+      for element in widget_settings.keys():
         typeof = eval("QtWidgets."+element)
         for name in widget_settings[element]:
           widget = self.findChild(typeof, name)
-          if widget != None:
+          if widget is not None:
             fields = widget_settings[element][name]
             self._load_ui_widget(comms, typeof, widget, fields)
-      except Exception as e:
-        print("Widget interpretation failure\n")
-        debug.print_exception(e)
+
+      for (typeof, widget, default) in self.default_registry:
+        if "key" in default:
+          value = self.key_value_map[default["key"]]
+        elif "value" in default:
+          value = default["value"]
+        else:
+          break # Unsupported
+
+        if typeof == QtWidgets.QLineEdit:
+          widget.setText(str(value))
+        else:
+          widget.setValue(value)
+
+      self.default_registry = []
+    except Exception as e:
+      print("Widget interpretation failure\n")
+      debug.print_exception(e)
 
 
   def set_command_queue(self, queue):
@@ -134,30 +159,54 @@ class MainWindow(QtWidgets.QMainWindow):
   def update_text_field(self, item, values=[0.0], config=["{:0.3f}"]):
     pattern = config[0]
     value = values[0]
-    if item == None:
+    if item is None:
       return
     else:
       item.setText(pattern.format(value))
 
 
   def update_plot_vec3(self, item, values=vect.Vec3(0,0,0), config=[]):
-    if item == None:
+    if item is None:
       return
     else:
       t = datetime.datetime.now().timestamp() - self.t_start
       item.update_data(t, vect.Vec3(values))
 
 
-  def update_plot_single(self, item, values=0, config=[]):
-    if item == None:
+  def update_plot_dual(self, item, values=[0, 0], config=[]):
+    if item is None:
       return
     else:
       t = datetime.datetime.now().timestamp() - self.t_start
       item.update_data(t, values)
 
 
+  def update_plot_single(self, item, values=0, config=[]):
+    if item is None:
+      return
+    else:
+      t = datetime.datetime.now().timestamp() - self.t_start
+      item.update_data(t, values)
+
+
+  def update_valued_widget(self, item, values=[0.0], config=[1.0]):
+    if len(config) > 0:
+      multiplier = config[0]
+    else:
+      mulitplier = 1.0
+
+    value = values[0] * multiplier
+    if item == None:
+      return
+    else:
+      item.setValue(value)
+
+
   def _load_ui_widget(self, comms, typeof, widget, fields):
     try:
+      if "default" in fields:
+        self.default_registry.append((typeof, widget, fields["default"]))
+
       if "stream" in fields:
         if fields["stream"]["target"] == "stdout":
           sys.stdout = extraConsole.extraConsole(widget, typeof.insertPlainText)
@@ -195,7 +244,7 @@ class MainWindow(QtWidgets.QMainWindow):
             fields["signals"][signal] = [fields["signals"][signal]] 
 
           for items in fields["signals"][signal]:
-            if isinstance(items, list) == False:
+            if isinstance(items, list) is False:
               items = [items]
             
             for item in items:
@@ -207,31 +256,42 @@ class MainWindow(QtWidgets.QMainWindow):
               )
 
     except Exception as e:
+      print()
       print("Widget interpretation failure\n")
       debug.print_exception(e)
 
   def _register_signal(self, typeof, widget, signal, fields):
-    callback_factory = self.signal_callback_factory_map[fields["action"]]
-    callback = callback_factory(widget, fields)
-    setup = self.widget_setup_map[typeof][signal]
+    try:
+      callback_factory = self.signal_callback_factory_map[fields["action"]]
+      callback = callback_factory(typeof, widget, fields)
+      setup = self.widget_setup_map[typeof][signal]
 
-    if "repeat" in fields:
-      params = fields["repeat"]
-      period_ms = params["rate"] * 1000
+      if "repeat" in fields:
+        params = fields["repeat"]
+        period_ms = params["rate"] * 1000
 
-      stop_signal = params["stop"]
-      stop_setup = self.widget_setup_map[typeof][stop_signal]
+        stop_signal = params["stop"]
+        stop_setup = self.widget_setup_map[typeof][stop_signal]
 
-      periodic = cbc.PeriodicCallback(period_ms, callback, self.add_upkeep)
-      self.callback_list.append(periodic)
+        periodic = cbc.PeriodicCallback(period_ms, callback, self.add_upkeep)
+        self.callback_list.append(periodic)
 
-      setup(widget, periodic.start)
-      stop_setup(widget, periodic.stop)
-    else:
-      setup(widget, callback)
+        setup(widget, periodic.start)
+        stop_setup(widget, periodic.stop)
+      else:
+        setup(widget, callback)
+
+    except Exception as e:
+      print()
+      print("Widget registration failure\n")
+      print(typeof)
+      print(widget)
+      print(signal)
+      print(fields)
+      debug.print_exception(e)
 
 
-  def _set_callback_factory(self, widget, fields):
+  def _set_callback_factory(self, typeof, widget, fields):
     path = fields["path"]
     payload_callbacks = []
     for arg in fields["args"]:
@@ -262,19 +322,32 @@ class MainWindow(QtWidgets.QMainWindow):
     self.command_queue.put((path, payload))
 
 
-  def _map_callback_factory(self, widget, fields):
-    key = fields["key"]
-    multiplier = fields["multiplier"]
+  def _map_callback_factory(self, typeof, widget, fields):
+    try:
+      key = fields["key"]
+      multiplier = fields["multiplier"]
 
-    map_callback = cbc.MapSetterCallback(
-      self.key_value_map,
-      key,
-      widget.value,
-      multiplier
-    )
+      if typeof == QtWidgets.QLineEdit:
+        cb = widget.text
+      else:
+        cb = widget.value
 
-    self.callback_list.append(map_callback)
-    return map_callback.callback
+      map_callback = cbc.MapSetterCallback(
+        self.key_value_map,
+        key,
+        cb,
+        multiplier
+      )
+
+      self.callback_list.append(map_callback)
+      return map_callback.callback
+    except Exception as e:
+      print()
+      print("Map callback factory failure")
+      print(widget)
+      print(fields)
+      debug.print_exception(e)
+      return None
 
   def _setup_pressed(self, widget, callback):
     widget.pressed.connect(callback)
@@ -285,6 +358,9 @@ class MainWindow(QtWidgets.QMainWindow):
   def _setup_slider_released(self, widget, callback):
     widget.sliderReleased.connect(callback)
 
+  def _setup_line_edit_finished(self, widget, callback):
+    widget.editingFinished.connect(callback)
+
 
   def _get_timestamp(self):
     return datetime.datetime.now().timestamp()
@@ -294,6 +370,11 @@ class MainWindow(QtWidgets.QMainWindow):
     if widget_str == "plotVec3":
       setting_title = settings["title"]
       new_widget = plotCanvas.XyzPlotCanvas(title=setting_title)
+      parent_widget.addWidget(new_widget)
+
+    if widget_str == "plotDual":
+      setting_title = settings["title"]
+      new_widget = plotCanvas.DualPlotCanvas(title=setting_title)
       parent_widget.addWidget(new_widget)
 
     if widget_str == "plotSingle":
