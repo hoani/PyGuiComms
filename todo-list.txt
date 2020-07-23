@@ -1,34 +1,3 @@
-[] Pendulum Control GUI
-    [X] Configure protocol
-        [X] Requires:
-            - Start Pendulum Control/Stop pendulum control
-            - Limits
-
-    [X] Create GUI:
-        [X] Control commands
-        [X] Remote logging
-        [X] Terminal
-        [X] AHRS feedback
-        [X] AHRS plotting
-        [X] Add limit
-    [] Add control commands to protocol
-        [X] Settable gains
-        [X] Enable control
-        [X] Open loop control start/stop
-        [X] Add limit
-        [] Implement default values for value_map or remove default values in widget settings
-
-    [X] New features:
-        [X] Get AHRS dials functional
-        [X] Add progress bars (with multipliers)
-        [X] Add dual plots for plotting motor output
-        [X] Add AHRS Commands to buttons
-
-[X] Integrate L3aP into project
-[X] Remove RoBus from project
-
-[X] Add basic json load tests for config files to ensure they are still readable
-
 [] Big Project - Gui Launcher As Proxy
 [] Add servo UI
     [] Investigate new UI elements for showing angle etc
@@ -40,7 +9,4 @@
     [] Implement a GPIO UI
     [] Include the ability to change between Input to Output
     [] Input mode reads, output mode outputs
-[] Add file headers and descriptions
-    [] Research licence types and select license
-[] UI Base - make multi-parameter set commands set the key-value map (see line 55)
-[] Investigate using TOML as a config format
+[] Add file headers and descriptions to MIT

@@ -133,7 +133,6 @@ class MainWindow(QtWidgets.QMainWindow):
         else:
           break # Unsupported
 
-        print(widget, value)
         if typeof == QtWidgets.QLineEdit:
           widget.setText(str(value))
         else:

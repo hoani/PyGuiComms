@@ -126,7 +126,7 @@
           "action" : "set",
           "path": "control/pendulum",
           "args": [
-            { "key": "control/pendulum/gains/kp", "default": 0.0 },
+            { "key": "control/pendulum/gains/kp", "default": 1.0 },
             { "key": "control/pendulum/gains/ki", "default": 0.0 },
             { "key": "control/pendulum/gains/kd", "default": 0.0 },
             { "key": "control/pendulum/setpoint", "default": 0.0 },
