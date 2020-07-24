@@ -104,6 +104,9 @@ class MainWindow(QtWidgets.QMainWindow):
       },
       QtWidgets.QLineEdit: {
         "editingFinished": self._setup_line_edit_finished
+      },
+      QtWidgets.QDial: {
+        "released": self._setup_dial_released
       }
     }
 
@@ -356,6 +359,9 @@ class MainWindow(QtWidgets.QMainWindow):
     widget.released.connect(callback)
 
   def _setup_slider_released(self, widget, callback):
+    widget.sliderReleased.connect(callback)
+
+  def _setup_dial_released(self, widget, callback):
     widget.sliderReleased.connect(callback)
 
   def _setup_line_edit_finished(self, widget, callback):
