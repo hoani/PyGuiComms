@@ -1,7 +1,5 @@
 [] Big Project - Gui Launcher As Proxy
-[] Add servo UI
-    [] Investigate new UI elements for showing angle etc
-    [] Implement in a servo UI - should include drop down for selecting a servo
+[X] Add servo UI
 [] Add Navigation UI
     [] Investigate a good UI element for showing a map
     [] Implement in a nav UI

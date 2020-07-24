@@ -184,6 +184,22 @@
       "subscriptions": {
         "ahrs/angle/yaw": { "callback": "set", "config": [1.0]}
       }
+    },
+    "Dial_servo0": {
+      "signals": {
+        "released": [
+          { "action" : "map", "key": "servo/set/duty", "multiplier": 0.0075 },
+          { "action" : "set", "path": "servo/set", "args": [ 0,  { "key": "servo/set/duty", "default": 0.0 }] }
+        ]
+      }
+    },
+    "Dial_servo1": {
+      "signals": {
+        "released": [
+          { "action" : "map", "key": "servo/set/duty", "multiplier": 0.0075 },
+          { "action" : "set", "path": "servo/set", "args": [ 1,  { "key": "servo/set/duty", "default": 0.0 }] }
+        ]
+      }
     }
   },
   "QProgressBar": {
