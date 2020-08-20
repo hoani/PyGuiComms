@@ -3,8 +3,4 @@
 [] Add Navigation UI
     [] Investigate a good UI element for showing a map
     [] Implement in a nav UI
-[] Add GPIO UI
-    [] Implement a GPIO UI
-    [] Include the ability to change between Input to Output
-    [] Input mode reads, output mode outputs
 [] Add file headers and descriptions to MIT
