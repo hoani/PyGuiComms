@@ -337,10 +337,10 @@
     },
     "LineEdit_pendulumSetpoint": {
       "input": true,
-      "default": { "key": "control/pendulum/setpoint/value" },
+      "default": { "key": "control/pendulum/setpoint" },
       "signals": {
         "editingFinished":
-          { "action" : "map", "key": "control/pendulum/setpoint/value", "multiplier": null }
+          { "action" : "map", "key": "control/pendulum/setpoint", "multiplier": null }
       }
     },
     "LineEdit_pendulumLimit": {
