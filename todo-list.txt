@@ -1,6 +1,10 @@
+[] Portablity improvements
+  [] Update requirements.txt
+  [] Remove references to robus from launch scripts
+  [] Turn launch scripts into a single launcher which takes a ui name (eg. `python3 -m pyguicomms ahrs`)
+[] github CI integration
+[] Look for any opportunities to separate out business logic from UI... there might not be.
+  [] If UI is entirely a user of pyside, rename to pysideUi
+
+
 [] Big Project - Gui Launcher As Proxy
-[X] Add servo UI
-[] Add Navigation UI
-    [] Investigate a good UI element for showing a map
-    [] Implement in a nav UI
-[] Add file headers and descriptions to MIT
